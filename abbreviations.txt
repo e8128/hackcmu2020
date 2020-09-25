@@ -1,0 +1,76 @@
+BH
+Baker Hall
+CFA
+College of Fine Arts
+CIC
+Collaborative Innovation Center
+CYH
+Cyert Hall
+DH
+Doherty Hall
+EDS
+Elliot Dunlap Smith Hall
+GES
+Gesling Stadium
+GHC
+Gates and Hillman Centers
+GYM
+Weigand Gymnasium
+HBH
+Hamburg Hall
+HH
+Hamerschlag Hall
+HL
+Hunt Library
+HOA
+Hall of the Arts
+INI
+4616 Henry Street
+MI
+Mellon Institute
+MM
+Margaret Morrison Carnegie Hall
+NSH
+Newell-Simon Hall
+OFF
+Off Campus
+PCA
+Purnell Center for the Arts
+PH
+Porter Hall
+POS
+Posner Hall
+PTC
+Pittsburgh Technology Center - 2nd Avenue
+REH
+Roberts Engineering Hall
+TEP
+Tepper Quad
+3SC
+300 South Craig Street
+4SC
+407 South Craig Street
+SEI
+Software Engineering Institute
+SH
+Scaife Hall
+CUC
+Cohon University Center
+WH
+Warner Hall
+WEH
+Wean Hall
+TBA
+To be Announced
+DNM
+Does Not Meet
+B23
+Silicon Valley
+CMB
+Carnegie Mellon Building
+LAS
+Liberal Arts & Sciences Building
+MSB
+Medical College Building
+TOR
+Torrens
