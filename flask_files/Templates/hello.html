@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Home page</title>
+    </head>
+    <body>
+        <h1>This is the Home page</h1>
+        {% for x in range(10) %}
+            {% if x % 2 == 1 %}
+                <p>{{x}}</p>
+            {% endif %}
+        {% endfor %}
+        <form action="#" method="post">
+            <p>Name:</p>
+            <p><input type="text" name= "nm"></p>
+            <p><input type= "submit" value ="submit"></p>
+        </form>
+    </body>
+</html>>
