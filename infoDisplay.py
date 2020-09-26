@@ -30,7 +30,7 @@ heuristicDict = {'fridayOff': optimization.minimumFridayHeuristic,
                  }
 
 def getBestSchedule (classes, option):
-    potentialSchedules = generateAll(classes)
+    (potentialSchedules, junk1, junk2) = generateAll(classes)
     schedule = optimize(potentialSchedules, heuristicDict[option])
     return schedule
 
