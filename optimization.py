@@ -127,6 +127,7 @@ def getWeekInfo(classPeriod): #takes 1-d obj and maps all times to weekday set
             timeStart = classObj.start
             timeEnd = classObj.end 
             weekDay = extractDOW(classObj.start)
+<<<<<<< HEAD
             print(weekDay in weekdaySet)
             weekdaySet[weekDay].append(timeStart)
             weekdaySet[weekDay].append(timeEnd)
@@ -150,6 +151,34 @@ def getWeekInfo(classPeriod): #takes 1-d obj and maps all times to weekday set
 #     else:
 #         difference = t2 - t1
 #     return difference
+=======
+            weekdaySet[weekDay].append(goodDateFormat(timeStart))
+            weekdaySet[weekDay].append(goodDateFormat(timeEnd))
+    # print(weekdaySet)
+    return weekdaySet
+   
+
+#write a fucntiont hat takes a list of schedule return heuristic value 
+
+def timeSubtraction(t1, t2): #takes two strings and finds the mins between
+    # print(t1,t2)
+    difference = None
+    newT = t1.split(':')
+    hour1 = int(newT[0])
+    min1=int(newT[1])
+    newT2 = t2.split(':')
+    hour2=int(newT2[0])
+    min2=int(newT2[1])
+    t1 = hour1*60+min1
+    t2 = hour2*60+min2
+    #t1 = timedelta(hours=hour1, minutes=min1)
+    #t2 = timedelta(hours=hour2, minutes=min2)
+    if t1 > t2:
+        difference = t1 - t2
+    else:
+        difference = t2 - t1
+    return difference
+>>>>>>> 978e9882a2ba267d5128059857d111d349d2195d
     #return int(difference.total_seconds()) // 60  
 
 def getUnits(courses): #takes list of classes and returns total units taken
