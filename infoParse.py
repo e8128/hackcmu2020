@@ -216,7 +216,7 @@ def generatePossibleSections(courseNumber):
 # Checks if a course section is located in Pittsburgh
 def checkLocation(course, sectionLetter):
     infoDict = parsedClassInfo[course]
-    print(infoDict)
+    # print(infoDict)
     for section in infoDict['sections']:
         if (section['Lec/Sec'] != sectionLetter):
             continue

@@ -36,13 +36,15 @@ def fullSearch(allPossibilities, current, meetingList):
 # Takes a list of courses
 # Generate all possible course schedules
 def generateAll(courses):
+    global potentialSchedules
+    potentialSchedules = []
     allPossibilities = []
     for course in courses:
         possibleSections = generatePossibleSections(course)
         sectionMeetings = []
         for section in possibleSections:
             # TODO: Check the boolean flags properly
-            print(section)
+            # print(section)
             if (course == '15112' and section[0] == '3'):
                 continue
             (meetings, garbo1, garbo2, garbo3) = generateMeetingTimes(course, section)
