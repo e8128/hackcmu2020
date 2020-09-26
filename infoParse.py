@@ -25,7 +25,9 @@ dowDict = {'M': '1900-01-01',
            'T': '1900-01-02',
            'W': '1900-01-03',
            'R': '1900-01-04',
-           'F': '1900-01-05'}
+           'F': '1900-01-05',
+           'S': '1900-01-06',
+           'U': '1900-01-07'}
 
 # Returns datetime object
 def parseTime(dow, time):
@@ -106,7 +108,7 @@ def countTime(meetings):
         minutes = meetingMinutes(meeting)
         dowTimes[meeting.start.weekday()] += minutes
         time += minutes
-    return dowTimes[:5]
+    return dowTimes
 
 # Returns how much minutes per week are remote
 def remoteTime(meetings):
