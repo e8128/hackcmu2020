@@ -6,6 +6,7 @@ from infoParse import generatePossibleSections
 from infoParse import remoteTime
 from infoParse import countTime
 from infoParse import extractDOW
+from infoParse import parsedClassInfo
 
 potentialSchedules = []
 
@@ -168,6 +169,20 @@ def getDistanceWalked(classPeriods): #takes a list of classes periods
             else:
                 weekdaySet[currday]+=5
     return sum(weekdaySet.values()) #returns the sum of all distance walked
+
+def getUnits(courses): #takes list of classes and returns total units taken
+    unitCount = 0 
+    for c in courses:
+        c=str(c)
+        c=c.strip()
+        if c in parsedClassInfo:
+            unitCount += float(parsedClassInfo[c]['Units']) #parsedClassInfo is global 
+                                                    #dictionary containing a 
+                                                    #two layer dictionary 
+        else:
+            unitCount+=10 #if not in parsed class info it will default to 10 added 
+    return unitCount
+
 
 def largeCardio(sched):
     return -1 * getDistanceWalked(sched)

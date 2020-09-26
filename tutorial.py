@@ -1,5 +1,6 @@
 from flask import Flask,redirect,url_for,render_template,request
 from infoDisplay import getBestSchedule,getInfo
+from optimization import getUnits
 
 app = Flask(__name__)
 
@@ -22,7 +23,14 @@ def classes(class_string,option):
     schedule = getBestSchedule(classes, option)
     info = getInfo(schedule)
     print(info) #TODO: display schedule
-    return render_template("hello.html",name=option,timeWalked=None,remote=None,timeAtSchool=None,units=None)
+    weekdayTime = info[1] #list from length 7 each index is time in mins spent
+    remoteTime = info[2][0] #info[2] is tuple of (remote, oncampusTime)
+    campusTime = info[2][1]
+    units = getUnits(classes)
+    distance = info[3] 
+    return render_template("hello.html",name=option,timeWalked=distance,
+                            remote=remoteTime,timeAtSchool=campusTime
+                            ,units=units)
 
 @app.route("/login",methods=["POST","GET"])
 def login():
@@ -48,17 +56,16 @@ def checkInput(s): #checks if the classes in put is valid
 def badInput():
     return "BAD"
 
-tester = {'18213': 12, '15251':30}
-
+'''
 def getUnits(classes): #takes list of classes and returns total units taken
     unitCount = 0 
     for c in classes:
         c=str(c)
         c=c.strip()
-        if c in tester:
-            unitCount += tester[c]
-    return unitCount
-
+            if c in tester:
+                unitCount += tester[c]
+        return unitCount
+'''
 
     
 
