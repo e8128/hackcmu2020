@@ -26,8 +26,6 @@ def login():
     else:
         return render_template("login.html")
 
-
-
 @app.route("/<usr>")
 def user(usr):
     print("got user")
