@@ -164,7 +164,8 @@ def generatePossibleSections(courseNumber):
         return []
     classInfo = parsedClassInfo[courseNumber]
     profs = dict()
-    profs[classInfo['Instructor(s)']] = {"Lec": classInfo['Lec/Sec'], "Sec": []}
+    if ('Instructor(s)' in classInfo and classInfo['Instructor(s)'] != "\xa0"):
+        profs[classInfo['Instructor(s)']] = {"Lec": classInfo['Lec/Sec'], "Sec": []}
     others = classInfo['sections']
     for o in others:
         if ("Lec" in o['Lec/Sec']):
