@@ -13,7 +13,7 @@ junk2 = 0
 # Example of info return function
 def getInfo(schedule):
     return (schedule, countTime(schedule), remoteTime(schedule),
-             getDistanceWalked(schedule) )
+             getDistanceWalked(schedule), junk1, junk2)
 
 # TODO: Return earliest/latest class times (see optimization.py heuristics)
 def infoPrint(schedule):
@@ -35,6 +35,8 @@ heuristicDict = {'fridayOff': optimization.minimumFridayHeuristic,
                  }
 
 def getBestSchedule (classes, option):
+    global junk1
+    global junk2
     (potentialSchedules, junk1, junk2) = generateAll(classes)
     schedule = optimize(potentialSchedules, heuristicDict[option])
     return schedule
@@ -44,8 +46,7 @@ if __name__ == '__main__':
     # from user
     classes = ["15210", "15281", "84380", "21355", "11411"]
     # then generate the potentialSchedules
-    global junk1
-    global junk2
+    
     (potentialSchedules, junk1, junk2) = generateAll(classes)
     # from user
     chosenHeuristic = 'fridayOff'
@@ -65,3 +66,4 @@ if __name__ == '__main__':
     infoPrint(schedule3)
     infoPrint(schedule4)
     infoPrint(schedule5)
+    print(getInfo(schedule5))

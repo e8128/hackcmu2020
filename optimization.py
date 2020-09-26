@@ -57,7 +57,7 @@ def generateAll(courses):
         # Must be a conflict-free schedule
         if (len(checkConflicts(schedule)) == 0):
             cleanedSchedules.append(schedule)
-    return (cleanedSchedules, len(allPossibilities), len(cleanedSchedules))
+    return (cleanedSchedules, len(potentialSchedules), len(cleanedSchedules))
 
 # Following are Schedule Heuristics: smaller is better
 
@@ -183,7 +183,7 @@ def getRoom(s): #gets room from string
 
 def getDistanceWalked(classPeriods): #takes a list of classes periods
                                      #walked each day 
-    weekdaySet = {'Monday':0, 'Tuesday':0,' Wednesday':0, 
+    weekdaySet = {'Monday':0, 'Tuesday':0,'Wednesday':0, 
                 'Thursday':0, 'Friday':0, 'Saturday':0,
                 'Sunday':0}
     if len(classPeriods)==1:
