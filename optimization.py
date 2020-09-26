@@ -2,6 +2,7 @@ from infoParse import ClassPeriod
 from infoParse import parseTime
 from infoParse import getCourseMeetings
 from infoParse import checkConflicts
+from infoParse import generatePossibleSections
 
 potentialSchedules = []
 
@@ -11,8 +12,8 @@ def generateMeetingTimes(course, info):
     return getCourseMeetings(course, lecture, section)
 
 # tries all potential sections
-def generatePossibleSections(course):
-    return [('1', 'A'), ('1', 'B')]
+# def generatePossibleSections(course):
+#     return [('1', 'A'), ('1', 'B')]
 
 # Generates all potential course schedules
 def fullSearch(allPossibilities, current, meetingList):
@@ -36,11 +37,16 @@ def generateAll(courses):
     allPossibilities = []
     for course in courses:
         possibleSections = generatePossibleSections(course)
-        allPossibilities.append([generateMeetingTimes(course, section) for section in possibleSections])
+        sectionMeetings = []
+        for section in possibleSections:
+            (meetings, garbo1, garbo2, garbo3) = generateMeetingTimes(course, section)
+            sectionMeetings.append(meetings)
+        allPossibilities.append(sectionMeetings)
     fullSearch(allPossibilities, 0, [])
 
 # Note: generateAll must be called first
 def postProcess():
+    # print(potentialSchedules)
     cleanedSchedules = []
     for schedule in potentialSchedules:
         schedule.sort(key=lambda meeting: meeting.start)
@@ -54,13 +60,15 @@ def optimize(courses):
     generateAll(courses)
     potentialSchedules = postProcess()
     print("Number of Valid Schedules Generated:", len(potentialSchedules))
-    print(potentialSchedules)
+    # print(potentialSchedules)
     for potentialSchedule in potentialSchedules:
         print(potentialSchedule)
 
 
 if __name__ == '__main__':
-    optimize(["15122", "15213"])
+    # optimize(["15122", "15213"])
+    optimize(["16384", "18290", "18213", "18200"])
+    # 18202
     potentialSchedules = postProcess()
 
     # print(getCourseMeetings("15122", "1", "C"))

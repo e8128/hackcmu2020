@@ -66,7 +66,7 @@ class ClassPeriod:
         self.room = room
 
     def __repr__(self):
-        return "{} {} to {} @ {}".format(extractDOW(self.start), goodDateFormat(self.start), goodDateFormat(self.end),
+        return "{} {} {} to {} @ {}".format(self.classId, extractDOW(self.start), goodDateFormat(self.start), goodDateFormat(self.end),
             longForm(self.room))
 
 # Takes a list of classes and returns all meetings
