@@ -1,0 +1,83 @@
+.c-white {
+    color: #F5EDED;
+    
+}
+
+.c-whiteBg{
+    background-color: #F5EDED; 
+}
+
+.c-paraRed{
+    color: #BB0000;
+
+}
+
+.c-paraRedBg{
+    background-color: #BB0000;
+}
+
+.c-black{
+    color: #000000;
+}
+
+.c-blackBg{
+    background-color: #000000;
+}
+
+
+.c-fontTitles{
+    font-size: 78px;
+}
+
+.c-subtitle{
+    font-size: 48px;
+    text-align: center;
+    margin-top: 4%;
+    
+}
+
+.c-smallText{
+    font-size: 24px;
+}
+
+.c-paraFont{
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 4%; 
+    padding-bottom: 4%;
+}
+/*Code I wrote for fySite */
+.c-downArrowPosition{
+    position:absolute;
+    max-width: 15vw;
+    max-height:12vh;
+    display:block;
+    margin-right:auto;
+    margin-left:auto;
+    margin-top: 4%;
+    bottom: 1%;
+    margin-bottom: 4%;
+
+    left:48%;
+    transition: transform .2s;
+    opacity: 0.5;
+}
+
+
+.c-downArrowHover:hover{
+    max-width: 10vw;
+    transform: scale(1.5);
+}
+
+.c-smallerParaFont{
+    font-size: 26px;
+    text-align: center;
+}
+
+
+.c-container{   
+    border-radius: 30px;
+}
+
+
+
