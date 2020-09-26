@@ -63,11 +63,13 @@ def optimize(courses):
     # print(potentialSchedules)
     for potentialSchedule in potentialSchedules:
         print(potentialSchedule)
-
+    
 
 if __name__ == '__main__':
     # optimize(["15122", "15213"])
-    optimize(["16384", "18290", "18213", "18200"])
+    # optimize(["16384", "18290", "18213", "18200"])
+    # optimize(["15210", "15281", "84380", "21355", "11411"])
+    optimize(["73401"])
     # 18202
     potentialSchedules = postProcess()
 
