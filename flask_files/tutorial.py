@@ -7,15 +7,17 @@ def home():
     print("routed home")
     if request.method=="POST":
         classes=request.form["classes"]
-        print(url_for("classes",class_string=classes))
-        return redirect(url_for("classes",class_string=classes))
+        opt = request.form.get("options")
+        yeer = request.form.get("year")
+        print(opt)
+        return redirect(url_for("classes",class_string=classes,option=opt,year=yeer))
     else:
         return render_template("hello.html")
 
-@app.route("/<class_string>")
-def classes(class_string):
+@app.route("/<class_string>/<option>/<year>")
+def classes(class_string,option,year):
     print("got user1")
-    return str(class_string.split(","))
+    return str(class_string.split(","))+ " " + option+" "+year
 
 @app.route("/login",methods=["POST","GET"])
 def login():
