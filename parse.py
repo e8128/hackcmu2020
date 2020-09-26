@@ -4,7 +4,7 @@ import requests
 """
 {
     course number: {
-        'section': [{}], <-- each entry is a dictionary containing the fields below (for recitations)
+        'sections': [{}], <-- each entry is a dictionary containing the fields below (for recitations)
         'Course': "", <-- course number
         'Title': "", <-- rest are for lecture, check for None before manipulating values
         'Units': "",
