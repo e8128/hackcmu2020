@@ -5,7 +5,11 @@ from infoParse import checkConflicts
 from infoParse import generatePossibleSections
 from infoParse import remoteTime
 from infoParse import countTime
+<<<<<<< HEAD
 from infoParse import extractDOW
+=======
+from infoParse import parsedClassInfo
+>>>>>>> f33b3b919086f522748f8a2069b5c585ddbf56e1
 
 potentialSchedules = []
 
@@ -57,6 +61,21 @@ def generateAll(courses):
     return (cleanedSchedules, len(allPossibilities), len(cleanedSchedules))
 
 # Following are Schedule Heuristics: smaller is better
+
+
+def getUnits(courses): #takes list of classes and returns total units taken
+    unitCount = 0 
+    for c in courses:
+        c=str(c)
+        c=c.strip()
+        if c in parsedClassInfo:
+            unitCount += float(parsedClassInfo[c]['Units']) #parsedClassInfo is global 
+                                                    #dictionary containing a 
+                                                    #two layer dictionary 
+        else:
+            unitCount+=10 #if not in parsed class info it will default to 10 added 
+    return unitCount
+
 
 def remoteTimeHeuristic(schedule):
     remTime, inPersonTime = remoteTime(schedule)
@@ -214,5 +233,5 @@ if __name__ == '__main__':
     # optimize(["15122", "15213"])
     # optimize(["16384", "18290", "18213", "18200"])
     # optimize(["15210", "15281", "84380", "21355", "11411"])
-    # print(optimize(["18290", "18220", "18202", "15122", "18200"]))
-    print("main")
+    #print(optimize(["18290", "18220", "18202", "15122", "18200"]))
+    pass

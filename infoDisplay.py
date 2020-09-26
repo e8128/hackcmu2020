@@ -6,6 +6,9 @@ from optimization import generateAll
 from optimization import optimize
 import optimization
 
+junk1 = 0
+junk2 = 0
+
 # Example of info return function
 def getInfo(schedule):
     return (schedule, countTime(schedule), remoteTime(schedule))
@@ -39,6 +42,8 @@ if __name__ == '__main__':
     # from user
     classes = ["15210", "15281", "84380", "21355", "11411"]
     # then generate the potentialSchedules
+    global junk1
+    global junk2
     (potentialSchedules, junk1, junk2) = generateAll(classes)
     # from user
     chosenHeuristic = 'fridayOff'
