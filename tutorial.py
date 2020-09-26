@@ -1,0 +1,221 @@
+from flask import Flask,redirect,url_for,render_template,request
+
+from datetime import date, time, datetime, timedelta
+
+from infoParse import extractDOW, goodDateFormat
+from optimization import optimize
+
+tester = ['15122','18290']
+tester = optimize(tester)
+print(tester[0])
+
+app = Flask(__name__)
+
+@app.route("/",methods=["POST","GET"])
+def home():
+    print("routed home")
+    if request.method=="POST":
+        classes=request.form["classes"]
+        opt = request.form.get("options")
+        yeer = request.form.get("year")
+        print(opt)
+        if checkInput(classes):
+            return redirect(url_for('badInput'))
+        else:
+            return redirect(url_for("classes",class_string=classes,option=opt,year=yeer))
+    else:
+        return render_template("hello.html")
+
+@app.route("/<class_string>/<option>/<year>")
+def classes(class_string,option,year):
+    print("got user1")
+    unitCount = getUnits(class_string.split(','))
+    return str(unitCount)+ " " + option+" "+year
+
+@app.route("/login",methods=["POST","GET"])
+def login():
+    if request.method=="POST":
+        user=request.form["nm"]
+        print(url_for("user",usr=user))
+        return redirect(url_for("user",usr=user))
+    else:
+        return render_template("login.html")
+
+@app.route("/<usr>")
+def user(usr):
+    print("got user")
+    return usr
+
+
+
+def checkInput(s): #checks if the classes in put is valid
+    return '-' in s or s.isalpha()
+        
+
+@app.route('/badInput')
+def badInput():
+    return "BAD"
+
+def getUnits(classes): #takes list of classes and returns total units taken
+    unitCount = 0 
+    for c in classes:
+        c=str(c)
+        c=c.strip()
+        if c in tester:
+            unitCount += tester[c]
+    return unitCount
+
+
+def splitString(s): # takes string data we recieve from website 
+    newStr = s.split(' ')
+    classes = newStr[0]
+    opt = newStr[1]
+    year = newStr[2] 
+    classes=eval(classes)
+    return [classes,opt, year] 
+
+'''
+    self.classId = classId
+    self.start = start
+    self.end = end
+    self.room = room
+'''
+test = ['Monday 09:20 to 10:10 @ CMU REMOTE', 'Monday 10:40 to 11:30 @ Mellon Institute MELLON', 'Tuesday 08:00 to 09:20 @ CMU REMOTE', 'Tuesday 13:30 to 14:50 @ CMU REMOTE', 'Thursday 08:00 to 09:20 @ CMU REMOTE', 'Thursday 13:30 to 14:50 @ CMU REMOTE', 'Friday 09:20 to 10:10 @ Doherty Hall 2210']
+
+# [[Monday 09:20 to 10:10 @ CMU REMOTE, Monday 10:40 to 11:30 @ Mellon Institute 
+# MELLON, Tuesday 08:00 to 09:20 @ CMU REMOTE, Tuesday 13:30 to 14:50 @ CMU REMOTE, 
+# Thursday 08:00 to 09:20 @ CMU REMOTE, Thursday 13:30 to 14:50 @ CMU REMOTE, 
+# Friday 09:20 to 10:10 @ Doherty Hall 2210], [Monday 09:20 to 10:10 @ CMU REMOTE, 
+# Monday 10:40 to 11:30 @ Tepper Quad 1102, Tuesday 08:00 to 09:20 @ CMU REMOTE, 
+# Tuesday 13:30 to 14:50 @ CMU REMOTE, Thursday 08:00 to 09:20 @ CMU REMOTE, 
+# Thursday 13:30 to 14:50 @ CMU REMOTE, Friday 09:20 to 10:10 @ Doherty Hall 2210], 
+# [Monday 10:40 to 11:30 @ CMU REMOTE, Monday 10:40 to 11:30 @ Mellon Institute MELLON,
+#  Tuesday 08:00 to 09:20 @ CMU REMOTE, Tuesday 13:30 to 14:50 @ CMU REMOTE, 
+#  Thursday 08:00 to 09:20 @ CMU REMOTE, Thursday 13:30 to 14:50 @ CMU REMOTE, 
+#  Friday 10:40 to 11:30 @ Baker Hall A51], [Monday 10:40 to 11:30 @ CMU REMOTE, 
+#  Monday 10:40 to 11:30 @ Tepper Quad 1102, Tuesday 08:00 to 09:20 @ CMU REMOTE, 
+#  Tuesday 13:30 to 14:50 @ CMU REMOTE, Thursday 08:00 to 09:20 @ CMU REMOTE, 
+#  Thursday 13:30 to 14:50 @ CMU REMOTE, Friday 10:40 to 11:30 @ Baker Hall A51]]
+
+def getWeekInfo(classPeriod): #takes 1-d obj and maps all times to weekday set
+    weekdaySet = {'Monday':[], 'Tuesday':[],' Wednesday':[], 
+                'Thursday':[], 'Friday':[], 'Saturday':[],
+                'Sunday':[]}
+    for elem in classPeriod: 
+        classObj = elem
+        classObj.start 
+        if classObj.room != 'CMU REMOTE' and classObj.room != 'DNM' and classObj!='TBA':
+            timeStart = classObj.start
+            timeEnd = classObj.end 
+            weekDay = extractDOW(classObj.start)
+            weekdaySet[weekDay].append(goodDateFormat(timeStart))
+            weekdaySet[weekDay].append(goodDateFormat(timeEnd))
+    print(weekdaySet)
+    return weekdaySet
+   
+
+#write a fucntiont hat takes a list of schedule return heuristic value 
+
+def timeSubtraction(t1, t2): #takes two strings and finds the mins between
+    print(t1,t2)
+    difference = None
+    newT = t1.split(':')
+    hour1 = int(newT[0])
+    min1=int(newT[1])
+    newT2 = t2.split(':')
+    hour2=int(newT2[0])
+    min2=int(newT2[1])
+    t1 = hour1*60+min1
+    t2 = hour2*60+min2
+    #t1 = timedelta(hours=hour1, minutes=min1)
+    #t2 = timedelta(hours=hour2, minutes=min2)
+    if t1 > t2:
+        difference = t1 - t2
+    else:
+        difference = t2 - t1
+    return difference
+    #return int(difference.total_seconds()) // 60  
+
+def getAvgTimeOnCampus(weekdaySet): #takes a weekdaySet dictionary, finds time spent eachday
+    final = []     #return average mins per day 
+    for elem in weekdaySet: #index into weekday (monday: [(10:30, 200)])
+        timeDiff = 0
+        if weekdaySet[elem]!=[]:
+            print('weekdaything', weekdaySet[elem])
+            highest = weekdaySet[elem][len(weekdaySet[elem])-1] #ast element should be highest
+            lowest = weekdaySet[elem][0]
+            timeDiff = timeSubtraction(highest, lowest)
+            final.append(timeDiff)
+    print('final here',final)
+    return sum(final)/len(final) 
+
+distance = {'Doherty Hall': {'location': 'Doherty Hall', 'Doherty Hall': '0', 'Tepper Quad': '5', 'Margaret Morrison': '7', 'Wean hall': '1', 'CMU REMOTE': '0', 'Mellon Institute MELLON': '12', 'Scaife Hall': '4', 'ANSYS': '3', 'Hammerschlag Hall': '4', 'Hamburg Hall': '5', 'Porter hall': '5', 'Posner Hall': '6', 'Gates and Hillman Centers': '5'}, 'DH': {'location': 'Doherty Hall', 'Doherty Hall': '0', 'Tepper Quad': '5', 'Margaret Morrison': '7', 'Wean hall': '1', 'CMU REMOTE': '0', 'Mellon Institute MELLON': '12', 'Scaife Hall': '4', 'ANSYS': '3', 'Hammerschlag Hall': '4', 'Hamburg Hall': '5', 'Porter hall': '5', 'Posner Hall': '6', 'Gates and Hillman Centers': '5'}, 'Tepper Quad': {'location': 'Tepper Quad', 'Doherty Hall': '5', 'Tepper Quad': '0', 'Margaret Morrison': '8', 'Wean hall': '4', 'CMU REMOTE': '0', 'Mellon Institute MELLON': '9', 'Scaife Hall': '7', 'ANSYS': '6', 'Hammerschlag Hall': '7', 'Hamburg Hall': '2', 'Porter hall': '8', 'Posner Hall': '8', 'Gates and Hillman Centers': '2'}, 'Margaret Morrison': {'location': 'Margaret Morrison Carnegie Hall', 'Doherty Hall': '7', 'Tepper Quad': '8', 'Margaret Morrison': '0', 'Wean hall': '8', 'CMU REMOTE': '0', 'Mellon Institute MELLON': '16', 'Scaife Hall': '7', 'ANSYS': '7', 'Hammerschlag Hall': '6', 'Hamburg Hall': '7', 'Porter hall': '6', 'Posner Hall': '1', 'Gates and Hillman Centers': '7'}, 'Wean Hall': {'location': 'Wean Hall', 'Doherty Hall': '1', 'Tepper Quad': '4', 'Margaret Morrison': '8', 'Wean hall': '0', 'CMU REMOTE': '0', 'Mellon Institute MELLON': '11', 'Scaife Hall': '3', 'ANSYS': '2', 'Hammerschlag Hall': '3', 'Hamburg Hall': '3', 'Porter hall': '4', 'Posner Hall': '8', 'Gates and Hillman Centers': '3'}, 'CMU REMOTE': {'location': 'CMU REMOTE', 'Doherty Hall': '0', 'Tepper Quad': '0', 'Margaret Morrison': '0', 'Wean hall': '0', 'CMU REMOTE': '0', 'Mellon Institute MELLON': '0', 'Scaife Hall': '0', 'ANSYS': '0', 'Hammerschlag Hall': '0', 'Hamburg Hall': '0', 'Porter hall': '0', 'Posner Hall': '0', 'Gates and Hillman Centers': '0'}, 'Mellon Institute': {'location': 'Mellon Institute MELLON', 'Doherty Hall': '12', 'Tepper Quad': '9', 'Margaret Morrison': '16', 'Wean hall': '11', 'CMU REMOTE': '0', 'Mellon Institute MELLON': '0', 'Scaife Hall': '13', 'ANSYS': '13', 'Hammerschlag Hall': '14', 'Hamburg Hall': '9', 'Porter hall': '14', 'Posner Hall': '16', 'Gates and Hillman Centers': '9'}, 'Scaife hall': {'location': 'Scaife Hall', 'Doherty Hall': '4', 'Tepper Quad': '7', 'Margaret Morrison': '7', 'Wean hall': '3', 'CMU REMOTE': '0', 'Mellon Institute MELLON': '13', 'Scaife Hall': '0', 'ANSYS': '1', 'Hammerschlag Hall': '1', 'Hamburg Hall': '6', 'Porter hall': '1', 'Posner Hall': '7', 'Gates and Hillman Centers': '6'}, 'Ansys Hall': {'location': 'Ansys Hall', 'Doherty Hall': '3', 'Tepper Quad': '6', 'Margaret Morrison': '7', 'Wean hall': '2', 'CMU REMOTE': '0', 'Mellon Institute MELLON': '13', 'Scaife Hall': '1', 'ANSYS': '0', 'Hammerschlag Hall': '1', 'Hamburg Hall': '5', 'Porter hall': '2', 'Posner Hall': '7', 'Gates and Hillman Centers': '5'}, 'Hammerschlag': {'location': 'Hammerschlag Hall', 'Doherty Hall': '4', 'Tepper Quad': '7', 'Margaret Morrison': '6', 'Wean hall': '3', 'CMU REMOTE': '0', 'Mellon Institute MELLON': '14', 'Scaife Hall': '1', 'ANSYS': '1', 'Hammerschlag Hall': '0', 'Hamburg Hall': '6', 'Porter hall': '2', 'Posner Hall': '6', 'Gates and Hillman Centers': '6'}, 'Hamburg Hall': {'location': 'Hamburg Hall', 'Doherty Hall': '5', 'Tepper Quad': '2', 'Margaret Morrison': '7', 'Wean hall': '3', 'CMU REMOTE': '0', 'Mellon Institute MELLON': '9', 'Scaife Hall': '6', 'ANSYS': '5', 'Hammerschlag Hall': '6', 'Hamburg Hall': '0', 'Porter hall': '7', 'Posner Hall': '8', 'Gates and Hillman Centers': '0'}, 'Porter Hall': {'location': 'Porter hall', 'Doherty Hall': '5', 'Tepper Quad': '8', 'Margaret Morrison': '6', 'Wean hall': '4', 'CMU REMOTE': '0', 'Mellon Institute MELLON': '14', 'Scaife Hall': '1', 'ANSYS': '2', 'Hammerschlag Hall': '2', 'Hamburg Hall': '7', 'Porter hall': '0', 'Posner Hall': '6', 'Gates and Hillman Centers': '7'}, 'Posner Hall': {'location': 'Posner Hall', 'Doherty Hall': '6', 'Tepper Quad': '8', 'Margaret Morrison': '1', 'Wean hall': '8', 'CMU REMOTE': '0', 'Mellon Institute MELLON': '16', 'Scaife Hall': '7', 'ANSYS': '7', 'Hammerschlag Hall': '6', 'Hamburg Hall': '8', 'Porter hall': '6', 'Posner Hall': '0', 'Gates and Hillman Centers': '8'}, 'Gates and Hillman Center': {'location': 'Gates and Hillman Centers', 'Doherty Hall': '5', 'Tepper Quad': '2', 'Margaret Morrison': '7', 'Wean hall': '3', 'CMU REMOTE': '0', 'Mellon Institute MELLON': '9', 'Scaife Hall': '6', 'ANSYS': '5', 'Hammerschlag Hall': '6', 'Hamburg Hall': '0', 'Porter hall': '7', 'Posner Hall': '8', 'Gates and Hillman Centers': '0'}}
+
+def getRoom(s): #gets room from string
+    i = 0 
+    final = ''
+    while i <len(s) and not s[i].isdigit() :
+        final+=s[i]
+        i+=1
+    final = final.strip()
+    return final
+
+
+def getDistanceWalked(classPeriods): #takes a list of classes periods
+                                     #walked each day 
+    weekdaySet = {'Monday':0, 'Tuesday':0,' Wednesday':0, 
+                'Thursday':0, 'Friday':0, 'Saturday':0,
+                'Sunday':0}
+    if len(classPeriods)==1:
+        return weekDaySet
+    for i in range(1,len(classPeriods)):
+        lastRoom = classPeriods[i-1].room
+        lastday = extractDOW(classPeriods[i-1].start)
+        room = classPeriods[i].room
+        currday = extractDOW(classPeriods[i].start)
+
+        if lastday == currday:
+            print(currday)
+            lastRoom = getRoom(lastRoom)
+            room = getRoom(room)
+            if lastRoom in distance and room in distance[lastRoom]:
+                distanceWalked = distance[lastRoom][room] #key twice into dictionary
+                print(distanceWalked)
+                weekdaySet[currday] = weekdaySet[currday] + int(distanceWalked)
+            else:
+                weekdaySet[currday]+=5
+    return sum(weekdaySet.values()) #returns the sum of all distance walked 
+
+
+print(getDistanceWalked(tester[0]))
+
+# class Schedule:
+#     def __init__(self, classPeriods): #takes a list of classperiod objects 
+#         self.classes = classPeriods 
+#         self.timeOnCampus = 0; 
+#         self.distanceWalked = 0; 
+#         self.classOnFriday = 0; 
+    
+#     def __repr__(self):
+#         return f"{self.classes} {self.timeOnCampus} {self.distanceWalked} {self.classOnFriday}"
+
+
+# def optimizeClassSchedules(classPeriods): #takes 2d list of objects and evaluates 
+#                                           #the heuristics of them returns a list
+#                                           # of schedule objects 
+#     final = [] 
+#     for elem in classPeriods: #2d list, a list of  a list of objects
+#         schedule1 = Schedule(elem)
+#         weekdayInfo = getWeekInfo(elem)
+#         avgTime = getAvgTimeOnCampus(weekdayInfo)
+#         schedule1.timeOnCampus = avgTime 
+#         distanceWalked = getDistanceWalked(elem)
+#         final.append(schedule1)
+#     return final
+    
+#print(optimizeClassSchedules(tester))
+    
+
+if __name__== "__main__":
+    #app.run(debug="True")
+    pass
