@@ -10,18 +10,14 @@ def home():
         opt = request.form.get("options")
         yeer = request.form.get("year")
         print(opt)
-        if checkInput(classes):
-            return redirect(url_for('badInput'))
-        else:
-            return redirect(url_for("classes",class_string=classes,option=opt,year=yeer))
+        return redirect(url_for("classes",class_string=classes,option=opt,year=yeer))
     else:
-        return render_template("hello.html")
+        return render_template("hello.html",name=None,timeWalked=None,remote=None,timeAtSchool=None,units=None)
 
 @app.route("/<class_string>/<option>/<year>")
 def classes(class_string,option,year):
     print("got user1")
-    unitCount = getUnits(class_string.split(','))
-    return str(unitCount)+ " " + option+" "+year
+    return render_template("hello.html",name=option,timeWalked=None,remote=None,timeAtSchool=None,units=None)
 
 @app.route("/login",methods=["POST","GET"])
 def login():

@@ -167,17 +167,31 @@
         <div class='w3-container c-paraContainer c-paraRedBg'>
             <p class='c-white c-smallerParaFont'>
                 Some Helpful Stats: 
+                {% if name %}
+                    <p>Hello {{name}}!</p>
+                {%endif%}
                 <br>
-                Miles Walked Each Week: <input type="text" id='miles-walked'></input>
+                Time spent Walking Each Week:  
+                {% if timeWalked  %}
+                     <h1>{{timeWalked}}</h1>
+                 {%endif%}
                 <br>
-                Remote/In-Person Classes: <input type="text" id='remoteRation'></input>
+                Remote/In-Person Classes: 
+                {% if remote  %}
+                     <h1>{{remote}}</h1>
+                 {%endif%}
                 <br>
                 Avg Time at School (start of first class to end): <!-- graph later by day-->
-                <input type="text" id='timeAtSchool'></input> 
+                {% if timeAtSchool  %}
+                <h1>{{remote}}</h1>
+                {%endif%}
                 <br>
-                Units Taken: <input type="text" id='totalUnits'></input>
+                Units Taken: 
+                {% if units %}
+                <h1>{{remote}}</h1>
+                {%endif%}
                 <br>
-                Conflicts: <input type="text" id='conflicts'></input>
+                Conflicts: 
             </p>
 
         </div>
