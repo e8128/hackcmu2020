@@ -133,7 +133,7 @@ def getCourseMeetings(courseNumber, lectureNumber, recitationSection):
     others = classInfo['sections']
     for i in range(len(others)):
         o = others[i]
-        if ("Lec" == o['Lec/Sec'] or "Lec " + lectureNumber in o['Lec/Sec'] or recitationSection == o['Lec/Sec']):
+        if ("Lec" == o['Lec/Sec'] or "Lec " + lectureNumber in o['Lec/Sec'] or recitationSection == o['Lec/Sec'] or (i == 0 and o['Lec/Sec'] == '\xa0')):
             for day in o['Days']:
                 res.append(ClassPeriod(courseNumber, parseTime(day, o['Begin']), parseTime(day, o['End']), o['Bldg/Room']))
             if (i+1 < len(others) and others[i+1]['Lec/Sec'] == '\xa0'):
@@ -142,12 +142,26 @@ def getCourseMeetings(courseNumber, lectureNumber, recitationSection):
     return res
 
 # Takes course number and returns array of tuples possible (lecture, recitation)
-def generatePossibleSections(course):
+def generatePossibleSections(courseNumber):
     if (parsedClassInfo[courseNumber] is None):
         print("Class information not found")
         return []
+    classInfo = parsedClassInfo[courseNumber]
+    profs = dict()
+    profs[classInfo['Instructor(s)']] = {"Lec": classInfo['Lec/Sec'], "Sec": []}
+    others = classInfo['sections']
+    for o in others:
+        if ("Lec" in o['Lec/Sec']):
+            profs[o['Instructor(s)']] = {"Lec": o['Lec/Sec'], "Sec": []}
+        elif (o['Lec/Sec'] != '\xa0'):
+            profs[o['Instructor(s)']]['Sec'].append(o['Lec/Sec'])
     res = []
-    
+    for prof in profs:
+        lec = "1" if profs[prof]['Lec'] == "Lec" else profs[prof]['Lec'][4:]
+        if (len(profs[prof]['Sec']) == 0):
+            res.append((lec, 'A')) # Remove the Lec from lecture number
+        else:
+            res.extend([(lec, sec) for sec in profs[prof]['Sec']])
     return res
 
 if __name__ == '__main__':
