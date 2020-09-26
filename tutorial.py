@@ -8,7 +8,7 @@ from flask import Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
-
+import numpy as np
 app = Flask(__name__)
 
 
@@ -79,14 +79,19 @@ def badInput():
 
 def makeGraphWeekday(classes): #takes list of classes times and returns bar graph
     fig = plt.figure()
-    ax = fig.add_axes([0,0,1,1])
-    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday']
+    ax = fig.add_subplot(111)
+    days = ['M', 'T', 'W', 'T', 'F', 'Sat','Sun']
     mins = classes
-    ax.bar(days, mins)
+    ind=np.arange(7)
+    ax.bar(ind, mins,color='black')
+    xTickMarks = days
+    ax.set_xticks(ind)
+    xtickNames = ax.set_xticklabels(xTickMarks)
+    plt.setp(xtickNames, rotation=45, fontsize=10)
     plt.xlabel('Weekday')
     plt.ylabel('Time Spent in Mins')
     plt.title('Time Spent on Classes by Weekday')
-    plt.savefig('./static/assets/weekdayPlot.png')
+    plt.savefig('./static/assets/weekdayPlot.jpg',bbox_inches='tight')
 
 makeGraphWeekday([1,2,3,5,6,6,2])
 
