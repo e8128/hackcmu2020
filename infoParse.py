@@ -108,6 +108,7 @@ def countTime(meetings):
         time += minutes
     return dowTimes[:5]
 
+# Returns how much minutes per week are remote
 def remoteTime(meetings):
     remote = 0
     inPerson = 0
@@ -118,11 +119,6 @@ def remoteTime(meetings):
         else:
             inPerson += minutes
     return (remote, inPerson)
-    
-course1 = Course("15122", "Principles of Imperative Computing", "TR", "08:00AM", "09:20AM", "BH 5001", "Cervesato")
-course2 = Course("15150", "Principles of Functional Programming", "TR", "11:40AM", "01:00PM", "CMU REMOTE", "Brookes")
-print(course1.displayInfo())
-print(allMeetings([course1, course2]))
 
 # Takes registration info, returns array of ClassPeriod instances
 def getCourseMeetings(courseNumber, lectureNumber, recitationSection):
@@ -154,17 +150,21 @@ def generatePossibleSections(course):
     
     return res
 
-course3 = Course("48100", "Archi Studio", "MWF", "01:30PM", "4:20PM", "CFA 200", "TBA")
+if __name__ == '__main__':
+    course1 = Course("15122", "Principles of Imperative Computing", "TR", "08:00AM", "09:20AM", "BH 5001", "Cervesato")
+    course2 = Course("15150", "Principles of Functional Programming", "TR", "11:40AM", "01:00PM", "CMU REMOTE", "Brookes")
+    print(course1.displayInfo())
+    print(allMeetings([course1, course2]))
+    course3 = Course("48100", "Archi Studio", "MWF", "01:30PM", "4:20PM", "CFA 200", "TBA")
+    courses = [course1, course2, course3]
+    meetings = allMeetings(courses)
+    print("MEETINGS")
+    for meeting in meetings:
+        print(meeting)
+    print("Meetings: ", meetings)
 
-courses = [course1, course2, course3]
-meetings = allMeetings(courses)
-print("MEETINGS")
-for meeting in meetings:
-    print(meeting)
-print("Meetings: ", meetings)
+    print("Conflicts: ", checkConflicts(meetings))
 
-print("Conflicts: ", checkConflicts(meetings))
+    print("Minutes per day: ", countTime(meetings))
 
-print("Minutes per day: ", countTime(meetings))
-
-print("Remote Time: ", remoteTime(meetings))
+    print("Remote Time: ", remoteTime(meetings))
