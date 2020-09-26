@@ -1,4 +1,5 @@
 from flask import Flask,redirect,url_for,render_template,request
+from optimization import generateAll
 
 app = Flask(__name__)
 
