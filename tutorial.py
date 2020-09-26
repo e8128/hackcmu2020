@@ -13,7 +13,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 app = Flask(__name__)
 
-
 optionNames = { 'o-cardio': 'Cardio', 'fridayOff': 'No Fridays!', 
             'latestTime': 'Latest Time', 'earliestTime': 'Early Bird',
             'noRemote':'No Remote', 'o-downtime':'Most Break Between Class',
@@ -32,30 +31,32 @@ def home():
     else:
         return render_template("hello.html",name=None,timeWalked=None,remote=None,timeAtSchool=None,units=None)
 
+
 @app.route("/<class_string>/<option>")
 def classes(class_string,option):
     
     print("Input:", class_string, option)
     classes = class_string.split(", ")
     schedule = getBestSchedule(classes, option)
-    info = getInfo(schedule)
-    print(info) #TODO: display schedule
-    weekdayTime = info[1] #list from length 7 each index is time in mins spent
-    makeGraphWeekday(weekdayTime)
-    remoteTime = info[2][0] #info[2] is tuple of (remote, oncampusTime)
-    campusTime = info[2][1]
-    makePieChart(remoteTime, campusTime)
-    units = getUnits(classes)
-    distance = info[3] 
-    numSched = info[4]
-    name = optionNames[option]
-    if distance == 0:
-        distance = '< 1'
+    if (schedule is not None):
+        info = getInfo(schedule)
+        print(info) #TODO: display schedule
+        weekdayTime = info[1] #list from length 7 each index is time in mins spent
+        remoteTime = info[2][0] #info[2] is tuple of (remote, oncampusTime)
+        campusTime = info[2][1]
+        makePieChart(remoteTime, campusTime)
+        units = getUnits(classes)
+        distance = info[3] 
+        numSched = info[4]
+        name = optionNames[option]
+        if distance == 0:
+            distance = '< 1'
 
-    return render_template("hello.html",name=name,timeWalked=distance,
-                            remote=remoteTime,timeAtSchool=campusTime
-                            ,units=units, numSched=numSched, graphedW=True, 
-                            graphedP=True)
+        return render_template("hello.html",name=name,classes=[repr(c) for c in schedule],timeWalked=distance,
+                                remote=remoteTime,timeAtSchool=campusTime
+                                ,units=units, numSched=numSched, graphedW=True, 
+                                graphedP=True)
+    return render_template("hello.html",name=option,classes=[],timeWalked=None,remote=None,timeAtSchool=None,units=None)
 
 @app.route("/login",methods=["POST","GET"])
 def login():
