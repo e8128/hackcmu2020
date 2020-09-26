@@ -179,7 +179,10 @@ def generatePossibleSections(courseNumber):
         # Remove the Lec from lecture number
         lec = "1" if profs[prof]['Lec'] == "Lec" else (profs[prof]['Lec'] if "Lec" not in profs[prof]['Lec'] else profs[prof]['Lec'][4:])
         if (len(profs[prof]['Sec']) == 0):
-            res.append((lec, 'A'))
+            if not lec.isdigit():
+                res.append(("1", "A"))
+            else:
+                res.append((lec, 'A'))
         else:
             options = [(lec, sec) for sec in profs[prof]['Sec']]
             i = 0
@@ -220,7 +223,7 @@ if __name__ == '__main__':
     print(generatePossibleSections("15112"))
     print(generatePossibleSections("15122"))
     print(generatePossibleSections("15424"))
-    print(generatePossibleSections("15445"))
+    print(generatePossibleSections("15455"))
     print(getCourseMeetings("18213", "1", "F"))
     print(getCourseMeetings("18213", "2", "Z"))
     print(getCourseMeetings("18740", "1", "SV"))
