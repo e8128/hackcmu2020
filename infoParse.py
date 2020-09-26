@@ -131,7 +131,7 @@ def getCourseMeetings(courseNumber, lectureNumber, recitationSection):
         return []
     classInfo = parsedClassInfo[courseNumber]
     res = []
-    if (classInfo['Lec/Sec'] == '\xa0' or "Lec" == classInfo['Lec/Sec'] or "Lec " + lectureNumber in classInfo['Lec/Sec']):
+    if (classInfo['Lec/Sec'] == '\xa0' or "Lec" == classInfo['Lec/Sec'] or "Lec " + lectureNumber in classInfo['Lec/Sec'] or recitationSection == classInfo['Lec/Sec']):
         for day in classInfo['Days']:
             res.append(ClassPeriod(courseNumber, parseTime(day, classInfo['Begin']), parseTime(day, classInfo['End']), classInfo['Bldg/Room']))
     others = classInfo['sections']
@@ -143,6 +143,15 @@ def getCourseMeetings(courseNumber, lectureNumber, recitationSection):
             if (i+1 < len(others) and others[i+1]['Lec/Sec'] == '\xa0'):
                 for day in others[i+1]['Days']:
                     res.append(ClassPeriod(courseNumber, parseTime(day, others[i+1]['Begin']), parseTime(day, others[i+1]['End']), others[i+1]['Bldg/Room']))
+    return res
+
+# Takes course number and returns array of tuples possible (lecture, recitation)
+def generatePossibleSections(course):
+    if (parsedClassInfo[courseNumber] is None):
+        print("Class information not found")
+        return []
+    res = []
+    
     return res
 
 course3 = Course("48100", "Archi Studio", "MWF", "01:30PM", "4:20PM", "CFA 200", "TBA")
