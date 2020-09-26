@@ -21,7 +21,7 @@ def classes(class_string,option):
     classes = class_string.split(", ")
     schedule = getBestSchedule(classes, option)
     info = getInfo(schedule)
-    print(info)
+    print(info) #TODO: display schedule
     return render_template("hello.html",name=option,timeWalked=None,remote=None,timeAtSchool=None,units=None)
 
 @app.route("/login",methods=["POST","GET"])

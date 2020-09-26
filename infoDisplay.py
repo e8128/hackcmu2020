@@ -21,7 +21,12 @@ def infoPrint(schedule):
 heuristicDict = {'fridayOff': optimization.minimumFridayHeuristic,
                  'noRemote': optimization.remoteTimeHeuristic,
                  'latestTime': optimization.latestTimeHeuristic,
-                 'earliestTime': optimization.earliestTimeHeuristic}
+                 'earliestTime': optimization.earliestTimeHeuristic,
+                 'o-cardio': optimization.largeCardio,
+                 'o-downtime': optimization.maxTimeOnCampus,
+                 'o-getMeOut': optimization.leastTimeOnCampus,
+                 'o-iHateWalking': optimization.getDistanceWalked
+                 }
 
 def getBestSchedule (classes, option):
     potentialSchedules = generateAll(classes)
