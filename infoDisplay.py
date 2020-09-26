@@ -25,7 +25,8 @@ heuristicDict = {'fridayOff': optimization.minimumFridayHeuristic,
                  'o-cardio': optimization.largeCardio,
                  'o-downtime': optimization.maxTimeOnCampus,
                  'o-getMeOut': optimization.leastTimeOnCampus,
-                 'o-iHateWalking': optimization.getDistanceWalked
+                 'o-iHateWalking': optimization.getDistanceWalked,
+                 'shortestTime': optimization.shortestTimeHeuristic
                  }
 
 def getBestSchedule (classes, option):
@@ -48,8 +49,12 @@ if __name__ == '__main__':
     schedule3 = optimize(potentialSchedules, heuristicDict[chosenHeuristic])
     chosenHeuristic = 'earliestTime'
     schedule4 = optimize(potentialSchedules, heuristicDict[chosenHeuristic])
+    
+    chosenHeuristic = 'shortestTime'
+    schedule5 = optimize(potentialSchedules, heuristicDict[chosenHeuristic])
 
     infoPrint(schedule)
     infoPrint(schedule2)
     infoPrint(schedule3)
     infoPrint(schedule4)
+    infoPrint(schedule5)

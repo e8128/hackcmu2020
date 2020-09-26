@@ -80,51 +80,70 @@ def latestTimeHeuristic(schedule):
         latestTime = max(endTime, latestTime)
     return latestTime
 
+def shortestTimeHeuristic(meetings):
+    weekdaySet = {'Monday':[], 'Tuesday':[], 'Wednesday':[], 
+                 'Thursday':[], 'Friday':[], 'Saturday':[],
+                 'Sunday':[]}
+    totalTime = 0
+    for meeting in meetings: 
+        # classObj.start
+        weekDay = extractDOW(meeting.start)
+        weekdaySet[weekDay].append(meeting.start)
+        weekdaySet[weekDay].append(meeting.end)
+    for day in weekdaySet:
+        if len(weekdaySet[day]) <= 0:
+            continue
+        highest = weekdaySet[day][-1]
+        lowest = weekdaySet[day][0]
+        totalTime += timeSubtraction(lowest, highest)
+    return totalTime
+
 def getWeekInfo(classPeriod): #takes 1-d obj and maps all times to weekday set
-    weekdaySet = {'Monday':[], 'Tuesday':[],' Wednesday':[], 
+    weekdaySet = {'Monday':[], 'Tuesday':[], 'Wednesday':[], 
                 'Thursday':[], 'Friday':[], 'Saturday':[],
                 'Sunday':[]}
     for elem in classPeriod: 
         classObj = elem
-        classObj.start 
+        # classObj.start 
         if classObj.room != 'CMU REMOTE' and classObj.room != 'DNM' and classObj!='TBA':
             timeStart = classObj.start
             timeEnd = classObj.end 
             weekDay = extractDOW(classObj.start)
-            weekdaySet[weekDay].append(goodDateFormat(timeStart))
-            weekdaySet[weekDay].append(goodDateFormat(timeEnd))
-    print(weekdaySet)
+            print(weekDay in weekdaySet)
+            weekdaySet[weekDay].append(timeStart)
+            weekdaySet[weekDay].append(timeEnd)
     return weekdaySet
-   
 
-#write a fucntiont hat takes a list of schedule return heuristic value 
-
-def timeSubtraction(t1, t2): #takes two strings and finds the mins between
-    print(t1,t2)
-    difference = None
-    newT = t1.split(':')
-    hour1 = int(newT[0])
-    min1=int(newT[1])
-    newT2 = t2.split(':')
-    hour2=int(newT2[0])
-    min2=int(newT2[1])
-    t1 = hour1*60+min1
-    t2 = hour2*60+min2
-    #t1 = timedelta(hours=hour1, minutes=min1)
-    #t2 = timedelta(hours=hour2, minutes=min2)
-    if t1 > t2:
-        difference = t1 - t2
-    else:
-        difference = t2 - t1
-    return difference
+# def timeSubtraction(t1, t2): #takes two strings and finds the mins between
+#     print(t1,t2)
+#     difference = None
+#     newT = t1.split(':')
+#     hour1 = int(newT[0])
+#     min1=int(newT[1])
+#     newT2 = t2.split(':')
+#     hour2=int(newT2[0])
+#     min2=int(newT2[1])
+#     t1 = hour1*60+min1
+#     t2 = hour2*60+min2
+#     #t1 = timedelta(hours=hour1, minutes=min1)
+#     #t2 = timedelta(hours=hour2, minutes=min2)
+#     if t1 > t2:
+#         difference = t1 - t2
+#     else:
+#         difference = t2 - t1
+#     return difference
     #return int(difference.total_seconds()) // 60  
+
+def timeSubtraction(t1, t2):
+    timedelta = t2 - t1
+    return abs((int(timedelta.total_seconds()) // 60))
 
 def getAvgTimeOnCampus(weekdaySet): #takes a weekdaySet dictionary, finds time spent eachday
     final = []     #return average mins per day 
     for elem in weekdaySet: #index into weekday (monday: [(10:30, 200)])
         timeDiff = 0
         if weekdaySet[elem]!=[]:
-            print('weekdaything', weekdaySet[elem])
+            # print('weekdaything', weekdaySet[elem])
             highest = weekdaySet[elem][len(weekdaySet[elem])-1] #ast element should be highest
             lowest = weekdaySet[elem][0]
             timeDiff = timeSubtraction(highest, lowest)
@@ -158,12 +177,12 @@ def getDistanceWalked(classPeriods): #takes a list of classes periods
         currday = extractDOW(classPeriods[i].start)
 
         if lastday == currday:
-            print(currday)
+            # print(currday)
             lastRoom = getRoom(lastRoom)
             room = getRoom(room)
             if lastRoom in distance and room in distance[lastRoom]:
                 distanceWalked = distance[lastRoom][room] #key twice into dictionary
-                print(distanceWalked)
+                # print(distanceWalked)
                 weekdaySet[currday] = weekdaySet[currday] + int(distanceWalked)
             else:
                 weekdaySet[currday]+=5
@@ -195,4 +214,5 @@ if __name__ == '__main__':
     # optimize(["15122", "15213"])
     # optimize(["16384", "18290", "18213", "18200"])
     # optimize(["15210", "15281", "84380", "21355", "11411"])
-    print(optimize(["18290", "18220", "18202", "15122", "18200"]))
+    # print(optimize(["18290", "18220", "18202", "15122", "18200"]))
+    print("main")
