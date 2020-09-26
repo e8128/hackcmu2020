@@ -41,8 +41,11 @@ def generateAll(courses):
             (meetings, garbo1, garbo2, garbo3) = generateMeetingTimes(course, section)
             if (garbo3):
                 sectionMeetings.append(meetings)
+            if len(sectionMeetings) == 0:
+                raise Exception("Invalid class {} in schedule".format(course))
         allPossibilities.append(sectionMeetings)
     fullSearch(allPossibilities, 0, [])
+
     # Post-process to remove illegal schedules
     cleanedSchedules = []
     for schedule in potentialSchedules:
@@ -62,7 +65,22 @@ def minimumFridayHeuristic(schedule):
     cTime = countTime(schedule)
     return cTime[4] # Friday
 
+def earliestTimeHeuristic(schedule):
+    earliestTime = 2400
+    for meeting in schedule:
+        startTime = meeting.start.hour * 60 + meeting.start.minute
+        earliestTime = min(startTime, earliestTime)
+    return -earliestTime
+
+def latestTimeHeuristic(schedule):
+    latestTime = 0
+    for meeting in schedule:
+        endTime = meeting.end.hour * 60 + meeting.end.minute
+        latestTime = max(endTime, latestTime)
+    return latestTime
+
 # Takes a list of schedules and returns the best schedule based on heuristic
+# Returns None when no schedule exists: Front End should check this
 def optimize(potentialSchedules, heuristicFunction=remoteTimeHeuristic):
     # print("Number of Valid Schedules Generated:", len(potentialSchedules))
     currentSchedule = None

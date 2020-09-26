@@ -10,6 +10,7 @@ import optimization
 def getInfo(schedule):
     return (schedule, countTime(schedule), remoteTime(schedule))
 
+# TODO: Return earliest/latest class times (see optimization.py heuristics)
 def infoPrint(schedule):
     for meeting in schedule:
         print(meeting)
@@ -18,7 +19,9 @@ def infoPrint(schedule):
 
 # Populate this dictionary
 heuristicDict = {'fridayOff': optimization.minimumFridayHeuristic,
-                 'noRemote': optimization.remoteTimeHeuristic}
+                 'noRemote': optimization.remoteTimeHeuristic,
+                 'latestTime': optimization.latestTimeHeuristic,
+                 'earliestTime': optimization.earliestTimeHeuristic}
 
 # Example of how to use optimize
 if __name__ == '__main__':
@@ -31,6 +34,12 @@ if __name__ == '__main__':
     schedule = optimize(potentialSchedules, heuristicDict[chosenHeuristic])
     chosenHeuristic = 'noRemote'
     schedule2 = optimize(potentialSchedules, heuristicDict[chosenHeuristic])
+    chosenHeuristic = 'latestTime'
+    schedule3 = optimize(potentialSchedules, heuristicDict[chosenHeuristic])
+    chosenHeuristic = 'earliestTime'
+    schedule4 = optimize(potentialSchedules, heuristicDict[chosenHeuristic])
 
     infoPrint(schedule)
     infoPrint(schedule2)
+    infoPrint(schedule3)
+    infoPrint(schedule4)
