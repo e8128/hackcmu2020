@@ -17,7 +17,8 @@ def home():
 
 @app.route("/<class_string>/<option>/<year>")
 def classes(class_string,option,year):
-    print("got user1")
+    print("Input:", class_string, option, year)
+    
     return render_template("hello.html",name=option,timeWalked=None,remote=None,timeAtSchool=None,units=None)
 
 @app.route("/login",methods=["POST","GET"])
