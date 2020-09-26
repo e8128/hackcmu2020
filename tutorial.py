@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 from flask import Flask,redirect,url_for,render_template,request
 from infoDisplay import getBestSchedule,getInfo
 from optimization import getUnits
@@ -8,6 +10,7 @@ from flask import Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
+
 
 app = Flask(__name__)
 

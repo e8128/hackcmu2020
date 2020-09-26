@@ -42,6 +42,9 @@ def generateAll(courses):
         sectionMeetings = []
         for section in possibleSections:
             # TODO: Check the boolean flags properly
+            print(section)
+            if (course == '15112' and section[0] == '3'):
+                continue
             (meetings, garbo1, garbo2, garbo3) = generateMeetingTimes(course, section)
             if (garbo3):
                 sectionMeetings.append(meetings)
