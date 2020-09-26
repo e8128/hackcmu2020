@@ -183,10 +183,10 @@
                 <br>
                 Remote/In-Person Classes: 
                 {% if remote  %}
-                     <u>{{remote}}</u>
+                     <u>{{remote}}</u> <u>{{inPerson}}</u>
                  {%endif%}
                 <br>
-                Avg Time at School (start of first class to end): <!-- graph later by day-->
+                Avg Minutes at School (start of first class to end): <!-- graph later by day-->
                 {% if timeAtSchool  %}
                      <u>{{timeAtSchool}}</u>
                 {%endif%}
@@ -196,12 +196,11 @@
                     <u>{{units}}</u>
                 {%endif%}
                 <br>
-                Conflicts: 
-
+                Conflicts: <u>None</u>
                 <br>
-                Total Possible Schedules: 
-                {% if numSched}
-                    <u>{{numSched}}</u>
+                Valid (and Total) Schedules: 
+                {% if numSched1 %}
+                    <u>{{numSched1}}</u> <u>({{numSched2}})</u>
                 {%endif%}
             </p>
 

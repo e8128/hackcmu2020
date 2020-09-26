@@ -29,8 +29,8 @@ def classes(class_string,option):
     units = getUnits(classes)
     distance = info[3] 
     return render_template("hello.html",name=option,timeWalked=distance,
-                            remote=remoteTime,timeAtSchool=campusTime
-                            ,units=units)
+                            remote=remoteTime,inPerson=campusTime,timeAtSchool=campusTime
+                            ,units=units,numSched1=info[4],numSched2=info[5])
 
 @app.route("/login",methods=["POST","GET"])
 def login():
