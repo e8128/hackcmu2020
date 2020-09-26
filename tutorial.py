@@ -2,6 +2,13 @@ from flask import Flask,redirect,url_for,render_template,request
 from infoDisplay import getBestSchedule,getInfo
 from optimization import getUnits
 
+#Stackoverflow solution: https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
+import io
+from flask import Response
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+
 app = Flask(__name__)
 
 
@@ -31,6 +38,7 @@ def classes(class_string,option):
     info = getInfo(schedule)
     print(info) #TODO: display schedule
     weekdayTime = info[1] #list from length 7 each index is time in mins spent
+    makeGraphWeekday(weekdayTime)
     remoteTime = info[2][0] #info[2] is tuple of (remote, oncampusTime)
     campusTime = info[2][1]
     units = getUnits(classes)
@@ -42,7 +50,7 @@ def classes(class_string,option):
 
     return render_template("hello.html",name=name,timeWalked=distance,
                             remote=remoteTime,timeAtSchool=campusTime
-                            ,units=units, numSched=numSched)
+                            ,units=units, numSched=numSched, graphed=True)
 
 @app.route("/login",methods=["POST","GET"])
 def login():
@@ -68,16 +76,21 @@ def checkInput(s): #checks if the classes in put is valid
 def badInput():
     return "BAD"
 
-'''
-def getUnits(classes): #takes list of classes and returns total units taken
-    unitCount = 0 
-    for c in classes:
-        c=str(c)
-        c=c.strip()
-            if c in tester:
-                unitCount += tester[c]
-        return unitCount
-'''
+
+def makeGraphWeekday(classes): #takes list of classes times and returns bar graph
+    fig = plt.figure()
+    ax = fig.add_axes([0,0,1,1])
+    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday']
+    mins = classes
+    ax.bar(days, mins)
+    plt.xlabel('Weekday')
+    plt.ylabel('Time Spent in Mins')
+    plt.title('Time Spent on Classes by Weekday')
+    plt.savefig('./static/assets/weekdayPlot.png')
+
+makeGraphWeekday([1,2,3,5,6,6,2])
+
+
 
     
 
