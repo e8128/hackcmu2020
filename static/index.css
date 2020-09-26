@@ -96,3 +96,9 @@
     max-height:110%;
     max-width:110%;
 }
+
+.c-calendar{
+    width: 60%;
+    height: 70%;
+    margin:10%;
+}
