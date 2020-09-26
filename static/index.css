@@ -91,3 +91,8 @@
     margin-right:20vw;
     margin-bottom:20px;
 }
+
+#bar-graph {
+    max-height:110%;
+    max-width:110%;
+}
