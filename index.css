@@ -1,3 +1,5 @@
+
+
 .c-white {
     color: #F5EDED;
     
@@ -32,7 +34,7 @@
 .c-subtitle{
     font-size: 48px;
     text-align: center;
-    margin-top: 4%;
+    margin-top: 10%;
     
 }
 
@@ -46,18 +48,18 @@
     margin-bottom: 4%; 
     padding-bottom: 4%;
 }
-/*Code I wrote for fySite */
+
+/*Code adapted from github.gxgao/fySite */
 .c-downArrowPosition{
     position:absolute;
-    max-width: 15vw;
-    max-height:12vh;
+    max-width: 10vw;
+    max-height:7vh;
     display:block;
     margin-right:auto;
     margin-left:auto;
     margin-top: 4%;
     bottom: 1%;
     margin-bottom: 4%;
-
     left:48%;
     transition: transform .2s;
     opacity: 0.5;
@@ -80,4 +82,14 @@
 }
 
 
-
+.c-paraContainer {
+    border-radius: 20px;
+    margin-top:7px;
+    padding-top:5px;
+    padding-right:10px;
+    padding-left:10px;
+    padding-bottom:5px;
+    margin-left:20vw;
+    margin-right:20vw;
+    margin-bottom:20px;
+}
