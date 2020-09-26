@@ -159,9 +159,10 @@ def generatePossibleSections(courseNumber):
             profs[o['Instructor(s)']]['Sec'].append(o['Lec/Sec'])
     res = []
     for prof in profs:
-        lec = "1" if profs[prof]['Lec'] == "Lec" else profs[prof]['Lec'][4:]
+        # Remove the Lec from lecture number
+        lec = "1" if profs[prof]['Lec'] == "Lec" else (profs[prof]['Lec'] if "Lec" not in profs[prof]['Lec'] else profs[prof]['Lec'][4:])
         if (len(profs[prof]['Sec']) == 0):
-            res.append((lec, 'A')) # Remove the Lec from lecture number
+            res.append((lec, 'A'))
         else:
             res.extend([(lec, sec) for sec in profs[prof]['Sec']])
     return res
