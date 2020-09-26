@@ -139,7 +139,8 @@ def getCourseMeetings(courseNumber, lectureNumber, recitationSection):
         if (classInfo['Location'] != "Pittsburgh, Pennsylvania"):
             pitts = False
         for day in classInfo['Days']:
-            res.append(ClassPeriod(courseNumber, parseTime(day, classInfo['Begin']), parseTime(day, classInfo['End']), classInfo['Bldg/Room']))
+            if (classInfo['Begin'] != '\xa0' and classInfo['End'] != '\xa0'):
+                res.append(ClassPeriod(courseNumber, parseTime(day, classInfo['Begin']), parseTime(day, classInfo['End']), classInfo['Bldg/Room']))
     others = classInfo['sections']
     for i in range(len(others)):
         o = others[i]
@@ -151,10 +152,12 @@ def getCourseMeetings(courseNumber, lectureNumber, recitationSection):
             if (o['Location'] != "Pittsburgh, Pennsylvania"):
                 pitts = False
             for day in o['Days']:
-                res.append(ClassPeriod(courseNumber, parseTime(day, o['Begin']), parseTime(day, o['End']), o['Bldg/Room']))
+                if (o['Begin'] != '\xa0' and o['End'] != '\xa0'):
+                    res.append(ClassPeriod(courseNumber, parseTime(day, o['Begin']), parseTime(day, o['End']), o['Bldg/Room']))
             if (i+1 < len(others) and others[i+1]['Lec/Sec'] == '\xa0'):
                 for day in others[i+1]['Days']:
-                    res.append(ClassPeriod(courseNumber, parseTime(day, others[i+1]['Begin']), parseTime(day, others[i+1]['End']), others[i+1]['Bldg/Room']))
+                    if (o['Begin'] != '\xa0' and o['End'] != '\xa0'):
+                        res.append(ClassPeriod(courseNumber, parseTime(day, others[i+1]['Begin']), parseTime(day, others[i+1]['End']), others[i+1]['Bldg/Room']))
     return (res, lectureFound, recitationFound, pitts)
 
 # Takes course number and returns array of tuples possible (lecture, recitation)
