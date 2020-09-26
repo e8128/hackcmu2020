@@ -75,7 +75,6 @@
 
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="./index.js"></script>
 
 
 </head>
@@ -120,16 +119,17 @@
         <div class='c-white c-smallerParaFont'>
           
             <form action="/" method="post">
+                <!---
                 <label for="year">Choose a Year and Semester:</label>
 
                 <select name="year" id="year">
-                <option value="Spring-21">Spring/2021</option>
-                <option value="Fall-21">Fall/2021</option>
-                <option value="Spring-22">Spring/2022</option>
-                <option value="Fall-22">Fall/2022</option>
+                    <option value="Spring-21">Spring/2021</option>
+                    <option value="Fall-21">Fall/2021</option>
+                    <option value="Spring-22">Spring/2022</option>
+                    <option value="Fall-22">Fall/2022</option>
                 </select>
                 <br>
-                <br>
+                <br>-->
                 
                 <label for="year">Select An Option for Optimization:</label>
     
@@ -138,13 +138,17 @@
                 <option value="o-downtime">Most Break Between Class</option>
                 <option value="o-getMeOut">Least Break Between Class</option>
                 <option value="o-iHateWalking">No-Cardio (I Hate Walking!)</option>
+                <option value="fridayOff">No Fridays (3 Day Weekend!)</option>
+                <option value="noRemote">No Remote</option>
+                <option value="latestTime">Latest Time (Breakfast at 2pm!)</option>
+                <option value="earliestTime">Earliest Time (Early bird)</option>
                 </select>
                 <br><br>
                 <label for="classes">
                  Write your class Codes here formatted 
                 as so (up to 8):
                 <br>
-                18-213, 70-101, 15-251, 21-420, 69-101
+                18213, 70101, 15251, 21420, 69101
                 <br>
             </label>
             <input type="text" id="classes" name="classes" required>

@@ -1,5 +1,5 @@
 from flask import Flask,redirect,url_for,render_template,request
-from optimization import generateAll
+from infoDisplay import getBestSchedule,getInfo
 
 app = Flask(__name__)
 
@@ -15,10 +15,13 @@ def home():
     else:
         return render_template("hello.html",name=None,timeWalked=None,remote=None,timeAtSchool=None,units=None)
 
-@app.route("/<class_string>/<option>/<year>")
-def classes(class_string,option,year):
-    print("Input:", class_string, option, year)
-    
+@app.route("/<class_string>/<option>")
+def classes(class_string,option):
+    print("Input:", class_string, option)
+    classes = class_string.split(", ")
+    schedule = getBestSchedule(classes, option)
+    info = getInfo(schedule)
+    print(info)
     return render_template("hello.html",name=option,timeWalked=None,remote=None,timeAtSchool=None,units=None)
 
 @app.route("/login",methods=["POST","GET"])

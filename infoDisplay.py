@@ -23,6 +23,11 @@ heuristicDict = {'fridayOff': optimization.minimumFridayHeuristic,
                  'latestTime': optimization.latestTimeHeuristic,
                  'earliestTime': optimization.earliestTimeHeuristic}
 
+def getBestSchedule (classes, option):
+    potentialSchedules = generateAll(classes)
+    schedule = optimize(potentialSchedules, heuristicDict[option])
+    return schedule
+
 # Example of how to use optimize
 if __name__ == '__main__':
     # from user
