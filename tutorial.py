@@ -4,6 +4,13 @@ from optimization import getUnits
 
 app = Flask(__name__)
 
+
+optionNames = { 'o-cardio': 'Cardio', 'fridayOff': 'No Fridays!', 
+            'latestTime': 'Latest Time', 'earliestTime': 'Early Bird',
+            'noRemote':'No Remote', 'o-downtime':'Most Break Between Class',
+            'o-getMeOut': 'Least Break Between Classes','o-iHateWalking': 'No-Cardio'
+}
+
 @app.route("/",methods=["POST","GET"])
 def home():
     print("routed home")
@@ -28,9 +35,14 @@ def classes(class_string,option):
     campusTime = info[2][1]
     units = getUnits(classes)
     distance = info[3] 
-    return render_template("hello.html",name=option,timeWalked=distance,
+    numSched = info[4]
+    name = optionNames[option]
+    if distance == 0:
+        distance = '< 1'
+
+    return render_template("hello.html",name=name,timeWalked=distance,
                             remote=remoteTime,timeAtSchool=campusTime
-                            ,units=units)
+                            ,units=units, numSched=numSched)
 
 @app.route("/login",methods=["POST","GET"])
 def login():
