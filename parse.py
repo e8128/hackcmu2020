@@ -4,7 +4,11 @@ import requests
 """
 {
     course number: {
+<<<<<<< HEAD
         'sections': [{}], <-- each entry is a dictionary containing the fields below (for recitations)
+=======
+        'section': [{}], <-- each entry is a dictionary containing the fields below (for recitations)
+>>>>>>> a363dc01759a36f3e35caa7d769a04961a0635e6
         'Course': "", <-- course number
         'Title': "", <-- rest are for lecture, check for None before manipulating values
         'Units': "",

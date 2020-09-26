@@ -77,14 +77,52 @@ def allMeetings(courses):
     meetings.sort(key=lambda meeting: meeting.start)
     return meetings
 
-parseTime("F", "12:50PM")
+def checkOverlap(course1, course2):
+    return (course1.end >= course2.start)
 
-print(longForm("PH 101"))
+# Returns the conflicts in a list of meetings
+# Requires: courses sorted
+def checkConflicts(meetings):
+    conflicts = []
+    for i in range(len(meetings)):
+        for j in range(i + 1, len(meetings)):
+            course1 = meetings[i]
+            course2 = meetings[j]
+            if (checkOverlap(course1, course2)):
+                conflicts.append((course1, course2))
 
+    return conflicts
+
+
+def meetingMinutes(meeting):
+    tdelta = meeting.end - meeting.start
+    return int(tdelta.total_seconds()) // 60     
+
+# Returns how many minutes of class on each weekday
+def countTime(meetings):
+    time = 0
+    dowTimes = [0] * 7
+    for meeting in meetings:
+        minutes = meetingMinutes(meeting)
+        dowTimes[meeting.start.weekday()] += minutes
+        time += minutes
+    return dowTimes[:5]
+
+def remoteTime(meetings):
+    remote = 0
+    inPerson = 0
+    for meeting in meetings:
+        minutes = meetingMinutes(meeting)
+        if (meeting.room == 'CMU REMOTE'):
+            remote += minutes
+        else:
+            inPerson += minutes
+    return (remote, inPerson)
+    
 course1 = Course("15122", "Principles of Imperative Computing", "TR", "08:00AM", "09:20AM", "BH 5001", "Cervesato")
 course2 = Course("15150", "Principles of Functional Programming", "TR", "11:40AM", "01:00PM", "CMU REMOTE", "Brookes")
-# print(course1.displayInfo())
-# print(allMeetings([course1, course2]))
+print(course1.displayInfo())
+print(allMeetings([course1, course2]))
 
 # Takes registration info, returns array of ClassPeriod instances
 def getCourseMeetings(courseNumber, lectureNumber, recitationSection):
@@ -107,5 +145,17 @@ def getCourseMeetings(courseNumber, lectureNumber, recitationSection):
                     res.append(ClassPeriod(courseNumber, parseTime(day, others[i+1]['Begin']), parseTime(day, others[i+1]['End']), others[i+1]['Bldg/Room']))
     return res
 
-c = getCourseMeetings("15424", "1", "B")
-print(c)
+course3 = Course("48100", "Archi Studio", "MWF", "01:30PM", "4:20PM", "CFA 200", "TBA")
+
+courses = [course1, course2, course3]
+meetings = allMeetings(courses)
+print("MEETINGS")
+for meeting in meetings:
+    print(meeting)
+print("Meetings: ", meetings)
+
+print("Conflicts: ", checkConflicts(meetings))
+
+print("Minutes per day: ", countTime(meetings))
+
+print("Remote Time: ", remoteTime(meetings))
