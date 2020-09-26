@@ -34,6 +34,7 @@ def home():
 
 @app.route("/<class_string>/<option>")
 def classes(class_string,option):
+    
     print("Input:", class_string, option)
     classes = class_string.split(", ")
     schedule = getBestSchedule(classes, option)
