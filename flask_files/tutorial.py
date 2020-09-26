@@ -2,11 +2,20 @@ from flask import Flask,redirect,url_for,render_template,request
 
 app = Flask(__name__)
 
-@app.route("/")
+@app.route("/",methods=["POST","GET"])
 def home():
     print("routed home")
-    return "Hello! this is the main page<h1>HELLO<h1>"
+    if request.method=="POST":
+        classes=request.form["classes"]
+        print(url_for("classes",class_string=classes))
+        return redirect(url_for("classes",class_string=classes))
+    else:
+        return render_template("hello.html")
 
+@app.route("/<class_string>")
+def classes(class_string):
+    print("got user1")
+    return str(class_string.split(","))
 
 @app.route("/login",methods=["POST","GET"])
 def login():
@@ -16,6 +25,8 @@ def login():
         return redirect(url_for("user",usr=user))
     else:
         return render_template("login.html")
+
+
 
 @app.route("/<usr>")
 def user(usr):

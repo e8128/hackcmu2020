@@ -1,19 +1,196 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>Home page</title>
-    </head>
-    <body>
-        <h1>This is the Home page</h1>
-        {% for x in range(10) %}
-            {% if x % 2 == 1 %}
-                <p>{{x}}</p>
-            {% endif %}
-        {% endfor %}
-        <form action="#" method="post">
-            <p>Name:</p>
-            <p><input type="text" name= "nm"></p>
-            <p><input type= "submit" value ="submit"></p>
-        </form>
-    </body>
-</html>>
+
+<head>
+    
+    <title>CMU Schedule Organizer</title>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='w3.css') }}">
+   
+    <style>
+        body, h1,h2,h3,h4,h5,h6 {font-family: "Open Sans", sans-serif}
+        html{ scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #000000;
+            background-size: 100%;
+            scroll-behavior: smooth;
+        }
+        .c-sendToBack{
+            z-index: -200;
+        }
+        
+        .c-mobile{
+            display:none;
+        } 
+        .c-monitor{
+            display:block;
+        } 
+        #cmuImage{
+            float:left; 
+         
+            height: 50vh;
+            width: 25vw;
+            left: -15vw;
+            top: -13vh;
+            border-radius: 0px;
+    
+            margin-left:0;
+        }
+        #title{
+            float: right; 
+            text-align: center;
+            margin-top: 1%;
+            margin-right: 10%;
+        }
+        #inputs{
+            margin-top: 5%;
+        }
+
+        @media only screen and (hover: none) and (pointer: coarse)  and 
+        (max-device-width: 900px) {
+            body{
+                background-image:none;
+                background-color: #0E153A;
+            }
+            .c-monitor{
+                display:none;
+            }
+            .c-mobile{
+                display:block;
+            }
+            .c-lineHeight{
+                line-height: 0.5;
+            }
+            .c-blockContainer{
+                margin-top:10%;
+                margin-right: 5%;
+                margin-left:5%;
+                
+            }
+        }
+
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="./index.js"></script>
+
+
+</head>
+
+
+
+<body >
+    <!-- Start Page -->
+    <div data-aos="fade-up">
+        <img src='./static/assets/cmu.jpg' alt='Something Went Wrong :('
+        class="w3-container c-container" id='cmuImage' style='padding-bottom: 20px;'>
+        <p class='c-fontTitles c-white' id='title'>
+            Schedule Orgnaizer
+        </p>
+        <p class='c-white c-smallText' id='title'>
+            Made for CMU students, by CMU students
+        </p>
+    </div>
+    <div data-aos="fade-up">
+        <p class='c-smallerParaFont c-white w3-container'>
+        <br>
+            Get Started Below
+        </p>
+    <!-- Arrow Code --> 
+    </div>
+        <a href='#InputPage'><img src="./static/assets/downArrow.png" 
+        alt='Go Down'
+        class="c-downArrowPosition c-downArrowHover">
+        </a>
+    </div>
+
+        <!-- Input Page-->
+        <div data-aos="fade-up"> 
+         
+            <p class='c-white c-subtitle' id="InputPage">
+                <br>
+                <br>
+                Select Your Inputs... 
+                <br>
+            </p>
+
+        <div class='c-white c-smallerParaFont'>
+            <label for="year">Choose a Year and Semester:</label>
+
+            <select name="year" id="year">
+            <option value="Spring-21">Spring/2021</option>
+            <option value="Fall-21">Fall/2021</option>
+            <option value="Spring-22">Spring/2022</option>
+            <option value="Fall-22">Fall/2022</option>
+            </select>
+            <br>
+            <br>
+            
+            <label for="year">Select An Option for Optimization:</label>
+
+            <select name="options" id="options">
+            <option value="o-cardio">Cardio (I Love Distance!)</option>
+            <option value="o-downtime">Most Break Between Class</option>
+            <option value="o-getMeOut">Least Break Between Class</option>
+            <option value="o-iHateWalking">No-Cardio (I Hate Walking!)</option>
+            </select>
+            <br><br>
+            <form action="#" ,mehthod="post">
+                <label for="classes" >
+                 Write your class Codes here formatted 
+                as so (up to 8):
+                <br>
+                18-213, 70-101, 15-251, 21-420, 69-101
+                <br>
+            </label>
+            <input type="text" id="classes" name="classes">
+            <br><br>
+            <input type="submit" value="Submit">
+            <br>
+            </form>
+ 
+        </div>
+        <!-- Calendar --> 
+        <div>
+
+            <p class="c-subtitle c-white">
+                Results: Calendar 
+            </p>
+
+        </div>
+
+        <!-- Stats Page -->
+        <div class='w3-container c-paraContainer c-paraRedBg'>
+            <p class='c-white c-smallerParaFont'>
+                Some Helpful Stats: 
+                <br>
+                Miles Walked Each Week: <input type="text" id='miles-walked'></input>
+                <br>
+                Remote/In-Person Classes: <input type="text" id='remoteRation'></input>
+                <br>
+                Avg Time at School (start of first class to end): <!-- graph later by day-->
+                <input type="text" id='timeAtSchool'></input> 
+                <br>
+                Units Taken: <input type="text" id='totalUnits'></input>
+                <br>
+                Conflicts: <input type="text" id='conflicts'></input>
+            </p>
+
+        </div>
+
+
+
+    </div>
+
+
+  </div>
+  <script>
+      AOS.init();
+  </script>
+
+</body>
+
+</html>
