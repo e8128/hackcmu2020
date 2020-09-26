@@ -50,29 +50,6 @@
             margin-top: 5%;
         }
 
-        @media only screen and (hover: none) and (pointer: coarse)  and 
-        (max-device-width: 900px) {
-            body{
-                background-image:none;
-                background-color: #0E153A;
-            }
-            .c-monitor{
-                display:none;
-            }
-            .c-mobile{
-                display:block;
-            }
-            .c-lineHeight{
-                line-height: 0.5;
-            }
-            .c-blockContainer{
-                margin-top:10%;
-                margin-right: 5%;
-                margin-left:5%;
-                
-            }
-        }
-
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="/static/daypilot/daypilot-all.min.js" type="text/javascript"></script>
@@ -219,35 +196,46 @@
                 <br>
                 Time spent Walking Each Week:  
                 {% if timeWalked  %}
-                     <u>{{timeWalked}}</u>
+                     <u>{{timeWalked}} mins</u>
                  {%endif%}
                 <br>
                 Remote/In-Person Classes: 
                 {% if remote  %}
-                     <u>{{remote}}</u>
+                     <u>{{remote}} mins / </u>
                  {%endif%}
-                <br>
-                Avg Time at School (start of first class to end): <!-- graph later by day-->
                 {% if timeAtSchool  %}
-                     <u>{{timeAtSchool}}</u>
+                     <u>{{timeAtSchool}} mins</u>
                 {%endif%}
                 <br>
+                <!-- graph later by day-->
+                
                 Units Taken: 
                 {% if units %}
                     <u>{{units}}</u>
                 {%endif%}
                 <br>
-                Conflicts: 
-
-                <br>
                 Total Possible Schedules: 
                 {% if numSched %}
                     <u>{{numSched}}</u>
                 {%endif%}
+                <br>
+
+                {% if graphedW %}
+                <img id='bar-graph' src="/static/assets/weekdayPlot.png" alt="graph">
+
+                <!-- <img src="/static/assets/weekdayPlot.png" alt="graph"> -->
+
+                {%endif%}
+                {% if graphedP %}
+                <br>
+                <br>
+                <img src="/static/assets/remoteInPersonPlot.png" alt="graph">
+                {%endif%}
+
             </p>
-
+                
         </div>
-
+       
 
 
     </div>

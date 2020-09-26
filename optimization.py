@@ -5,7 +5,9 @@ from infoParse import checkConflicts
 from infoParse import generatePossibleSections
 from infoParse import remoteTime
 from infoParse import countTime
+
 from infoParse import extractDOW
+
 from infoParse import parsedClassInfo
 
 potentialSchedules = []
@@ -40,6 +42,9 @@ def generateAll(courses):
         sectionMeetings = []
         for section in possibleSections:
             # TODO: Check the boolean flags properly
+            print(section)
+            if (course == '15112' and section[0] == '3'):
+                continue
             (meetings, garbo1, garbo2, garbo3) = generateMeetingTimes(course, section)
             if (garbo3):
                 sectionMeetings.append(meetings)
@@ -55,9 +60,24 @@ def generateAll(courses):
         # Must be a conflict-free schedule
         if (len(checkConflicts(schedule)) == 0):
             cleanedSchedules.append(schedule)
-    return cleanedSchedules
+    return (cleanedSchedules, len(potentialSchedules), len(cleanedSchedules))
 
 # Following are Schedule Heuristics: smaller is better
+
+
+def getUnits(courses): #takes list of classes and returns total units taken
+    unitCount = 0 
+    for c in courses:
+        c=str(c)
+        c=c.strip()
+        if c in parsedClassInfo:
+            unitCount += float(parsedClassInfo[c]['Units']) #parsedClassInfo is global 
+                                                    #dictionary containing a 
+                                                    #two layer dictionary 
+        else:
+            unitCount+=10 #if not in parsed class info it will default to 10 added 
+    return unitCount
+
 
 def remoteTimeHeuristic(schedule):
     remTime, inPersonTime = remoteTime(schedule)
@@ -81,44 +101,76 @@ def latestTimeHeuristic(schedule):
         latestTime = max(endTime, latestTime)
     return latestTime
 
+def shortestTimeHeuristic(meetings):
+    weekdaySet = {'Monday':[], 'Tuesday':[], 'Wednesday':[], 
+                 'Thursday':[], 'Friday':[], 'Saturday':[],
+                 'Sunday':[]}
+    totalTime = 0
+    for meeting in meetings: 
+        # classObj.start
+        weekDay = extractDOW(meeting.start)
+        weekdaySet[weekDay].append(meeting.start)
+        weekdaySet[weekDay].append(meeting.end)
+    for day in weekdaySet:
+        if len(weekdaySet[day]) <= 0:
+            continue
+        highest = weekdaySet[day][-1]
+        lowest = weekdaySet[day][0]
+        totalTime += timeSubtraction(lowest, highest)
+    return totalTime
+
 def getWeekInfo(classPeriod): #takes 1-d obj and maps all times to weekday set
-    weekdaySet = {'Monday':[], 'Tuesday':[],' Wednesday':[], 
+    weekdaySet = {'Monday':[], 'Tuesday':[], 'Wednesday':[], 
                 'Thursday':[], 'Friday':[], 'Saturday':[],
                 'Sunday':[]}
     for elem in classPeriod: 
         classObj = elem
-        classObj.start 
+        # classObj.start 
         if classObj.room != 'CMU REMOTE' and classObj.room != 'DNM' and classObj!='TBA':
             timeStart = classObj.start
             timeEnd = classObj.end 
             weekDay = extractDOW(classObj.start)
-            weekdaySet[weekDay].append(goodDateFormat(timeStart))
-            weekdaySet[weekDay].append(goodDateFormat(timeEnd))
-    # print(weekdaySet)
+            print(weekDay in weekdaySet)
+            weekdaySet[weekDay].append(timeStart)
+            weekdaySet[weekDay].append(timeEnd)
     return weekdaySet
-   
 
-#write a fucntiont hat takes a list of schedule return heuristic value 
-
-def timeSubtraction(t1, t2): #takes two strings and finds the mins between
-    # print(t1,t2)
-    difference = None
-    newT = t1.split(':')
-    hour1 = int(newT[0])
-    min1=int(newT[1])
-    newT2 = t2.split(':')
-    hour2=int(newT2[0])
-    min2=int(newT2[1])
-    t1 = hour1*60+min1
-    t2 = hour2*60+min2
-    #t1 = timedelta(hours=hour1, minutes=min1)
-    #t2 = timedelta(hours=hour2, minutes=min2)
-    if t1 > t2:
-        difference = t1 - t2
-    else:
-        difference = t2 - t1
-    return difference
+# def timeSubtraction(t1, t2): #takes two strings and finds the mins between
+#     print(t1,t2)
+#     difference = None
+#     newT = t1.split(':')
+#     hour1 = int(newT[0])
+#     min1=int(newT[1])
+#     newT2 = t2.split(':')
+#     hour2=int(newT2[0])
+#     min2=int(newT2[1])
+#     t1 = hour1*60+min1
+#     t2 = hour2*60+min2
+#     #t1 = timedelta(hours=hour1, minutes=min1)
+#     #t2 = timedelta(hours=hour2, minutes=min2)
+#     if t1 > t2:
+#         difference = t1 - t2
+#     else:
+#         difference = t2 - t1
+#     return difference
     #return int(difference.total_seconds()) // 60  
+
+def getUnits(courses): #takes list of classes and returns total units taken
+    unitCount = 0 
+    for c in courses:
+        c=str(c)
+        c=c.strip()
+        if c in parsedClassInfo:
+            unitCount += float(parsedClassInfo[c]['Units']) #parsedClassInfo is global 
+                                                    #dictionary containing a 
+                                                    #two layer dictionary 
+        else:
+            unitCount+=10 #if not in parsed class info it will default to 10 added 
+    return unitCount
+
+def timeSubtraction(t1, t2):
+    timedelta = t2 - t1
+    return abs((int(timedelta.total_seconds()) // 60))
 
 def getAvgTimeOnCampus(weekdaySet): #takes a weekdaySet dictionary, finds time spent eachday
     final = []     #return average mins per day 
@@ -210,4 +262,5 @@ if __name__ == '__main__':
     # optimize(["15122", "15213"])
     # optimize(["16384", "18290", "18213", "18200"])
     # optimize(["15210", "15281", "84380", "21355", "11411"])
-    print(optimize(["18290", "18220", "18202", "15122", "18200"]))
+    #print(optimize(["18290", "18220", "18202", "15122", "18200"]))
+    pass

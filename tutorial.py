@@ -1,10 +1,25 @@
+import matplotlib
+matplotlib.use('Agg')
 from flask import Flask,redirect,url_for,render_template,request
 from infoDisplay import getBestSchedule,getInfo
 from optimization import getUnits
 
+#Stackoverflow solution: https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
+
+from flask import Response
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+import numpy as np
 app = Flask(__name__)
 
-@app.route("/",methods=["GET"])
+optionNames = { 'o-cardio': 'Cardio', 'fridayOff': 'No Fridays!', 
+            'latestTime': 'Latest Time', 'earliestTime': 'Early Bird',
+            'noRemote':'No Remote', 'o-downtime':'Most Break Between Class',
+            'o-getMeOut': 'Least Break Between Classes','o-iHateWalking': 'No-Cardio'
+}
+
+@app.route("/",methods=["POST","GET"])
 def home():
     print("routed home")
     if request.method=="POST":
@@ -16,30 +31,32 @@ def home():
     else:
         return render_template("hello.html",name=None,timeWalked=None,remote=None,timeAtSchool=None,units=None)
 
-@app.route("/",methods=["POST"])
-def classes():
-    data = request.form
-    d = data.to_dict()
-    print(d)
-    if ('options' not in d or 'classes' not in d):
-        return render_template("hello.html",name="",classes=[],timeWalked=None,remote=None,timeAtSchool=None,units=None)
-    option = d['options']
-    class_string = d['classes']
+
+@app.route("/<class_string>/<option>")
+def classes(class_string,option):
+    
     print("Input:", class_string, option)
-    cl = class_string.split(", ")
-    schedule = getBestSchedule(cl, option)
+    classes = class_string.split(", ")
+    schedule = getBestSchedule(classes, option)
     if (schedule is not None):
         info = getInfo(schedule)
         print(info) #TODO: display schedule
         weekdayTime = info[1] #list from length 7 each index is time in mins spent
         remoteTime = info[2][0] #info[2] is tuple of (remote, oncampusTime)
         campusTime = info[2][1]
-        units = getUnits(cl)
+        makePieChart(remoteTime, campusTime)
+        units = getUnits(classes)
         distance = info[3] 
-        return render_template("hello.html",name=option,classes=[repr(c) for c in schedule],timeWalked=distance,
+        numSched = info[4]
+        name = optionNames[option]
+        if distance == 0:
+            distance = '< 1'
+
+        return render_template("hello.html",name=name,classes=[repr(c) for c in schedule],timeWalked=distance,
                                 remote=remoteTime,timeAtSchool=campusTime
-                                ,units=units)
-    return render_template("hello.html",name="",classes=[],timeWalked=None,remote=None,timeAtSchool=None,units=None)
+                                ,units=units, numSched=numSched, graphedW=True, 
+                                graphedP=True)
+    return render_template("hello.html",name=option,classes=[],timeWalked=None,remote=None,timeAtSchool=None,units=None)
 
 @app.route("/login",methods=["POST","GET"])
 def login():
@@ -65,16 +82,35 @@ def checkInput(s): #checks if the classes in put is valid
 def badInput():
     return "BAD"
 
-'''
-def getUnits(classes): #takes list of classes and returns total units taken
-    unitCount = 0 
-    for c in classes:
-        c=str(c)
-        c=c.strip()
-            if c in tester:
-                unitCount += tester[c]
-        return unitCount
-'''
+
+def makeGraphWeekday(classes): #takes list of classes times and returns bar graph
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    days = ['M', 'T', 'W', 'T', 'F', 'Sat','Sun']
+    mins = classes
+    ind=np.arange(7)
+    ax.bar(ind, mins,color='black')
+    xTickMarks = days
+    ax.set_xticks(ind)
+    xtickNames = ax.set_xticklabels(xTickMarks)
+    plt.setp(xtickNames, rotation=45, fontsize=10)
+    plt.xlabel('Weekday')
+    plt.ylabel('Time Spent in Mins')
+    plt.title('Time Spent on Classes by Weekday')
+    plt.savefig('./static/assets/weekdayPlot.png',bbox_inches='tight')
+
+def makePieChart(remote, inPerson):
+    labels = 'Remote', 'In Person'
+    total = float(remote) + float(inPerson)
+    remotePercentage = float(remote)/total
+    inPersonPerc = float(inPerson)/total
+    sizes = [remotePercentage, inPersonPerc]
+    fig1, ax1 = plt.subplots()
+    ax1.pie(sizes,  labels=labels, autopct='%1.1f%%',
+            shadow=True, startangle=90)
+    ax1.axis('equal') 
+    plt.title("Remote/In-Person Ratio")
+    plt.savefig('./static/assets/remoteInPersonPlot.png')
 
     
 

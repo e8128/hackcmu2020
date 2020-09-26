@@ -1,2 +1,5 @@
 __pycache__/
 test.out
+graphtest.py
+static/assets/remoteInPersonPlot.png
+static/assets/weekdayPlot.png

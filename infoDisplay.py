@@ -7,10 +7,13 @@ from optimization import optimize
 from optimization import getDistanceWalked
 import optimization
 
+junk1 = 0
+junk2 = 0
+
 # Example of info return function
 def getInfo(schedule):
     return (schedule, countTime(schedule), remoteTime(schedule),
-             getDistanceWalked(schedule) )
+             getDistanceWalked(schedule), junk1, junk2)
 
 # TODO: Return earliest/latest class times (see optimization.py heuristics)
 def infoPrint(schedule):
@@ -27,11 +30,14 @@ heuristicDict = {'fridayOff': optimization.minimumFridayHeuristic,
                  'o-cardio': optimization.largeCardio,
                  'o-downtime': optimization.maxTimeOnCampus,
                  'o-getMeOut': optimization.leastTimeOnCampus,
-                 'o-iHateWalking': optimization.getDistanceWalked
+                 'o-iHateWalking': optimization.getDistanceWalked,
+                 'shortestTime': optimization.shortestTimeHeuristic
                  }
 
 def getBestSchedule (classes, option):
-    potentialSchedules = generateAll(classes)
+    global junk1
+    global junk2
+    (potentialSchedules, junk1, junk2) = generateAll(classes)
     schedule = optimize(potentialSchedules, heuristicDict[option])
     return schedule
 
@@ -40,7 +46,8 @@ if __name__ == '__main__':
     # from user
     classes = ["15210", "15281", "84380", "21355", "11411"]
     # then generate the potentialSchedules
-    potentialSchedules = generateAll(classes)
+    
+    (potentialSchedules, junk1, junk2) = generateAll(classes)
     # from user
     chosenHeuristic = 'fridayOff'
     schedule = optimize(potentialSchedules, heuristicDict[chosenHeuristic])
@@ -50,8 +57,13 @@ if __name__ == '__main__':
     schedule3 = optimize(potentialSchedules, heuristicDict[chosenHeuristic])
     chosenHeuristic = 'earliestTime'
     schedule4 = optimize(potentialSchedules, heuristicDict[chosenHeuristic])
+    
+    chosenHeuristic = 'shortestTime'
+    schedule5 = optimize(potentialSchedules, heuristicDict[chosenHeuristic])
 
     infoPrint(schedule)
     infoPrint(schedule2)
     infoPrint(schedule3)
     infoPrint(schedule4)
+    infoPrint(schedule5)
+    print(getInfo(schedule5))
