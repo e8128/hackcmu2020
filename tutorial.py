@@ -95,7 +95,7 @@ def makeGraphWeekday(classes): #takes list of classes times and returns bar grap
     plt.xlabel('Weekday')
     plt.ylabel('Time Spent in Mins')
     plt.title('Time Spent on Classes by Weekday')
-    plt.savefig('./static/assets/weekdayPlot.jpg',bbox_inches='tight')
+    plt.savefig('./static/assets/weekdayPlot.png',bbox_inches='tight')
 
 def makePieChart(remote, inPerson):
     labels = 'Remote', 'In Person'
