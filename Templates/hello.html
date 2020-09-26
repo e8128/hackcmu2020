@@ -223,7 +223,7 @@
                 <br>
 
                 {% if graphedW %}
-                <img id='bar-graph' src="/static/assets/weekdayPlot.png" alt="graph">
+                <img id='bar-graph' src="/static/assets/weekdayPlot.png" + new Date().getTime() alt="graph">
 
                 <!-- <img src="/static/assets/weekdayPlot.png" alt="graph"> -->
 
@@ -231,7 +231,7 @@
                 {% if graphedP %}
                 <br>
                 <br>
-                <img src="/static/assets/remoteInPersonPlot.png" alt="graph">
+                <img src="/static/assets/remoteInPersonPlot.png" + new Date().getTime() alt="graph">
                 {%endif%}
 
             </p>

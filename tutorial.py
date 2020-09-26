@@ -44,6 +44,13 @@ def classes(class_string,option):
         weekdayTime = info[1] #list from length 7 each index is time in mins spent
         remoteTime = info[2][0] #info[2] is tuple of (remote, oncampusTime)
         campusTime = info[2][1]
+        import os
+        strFile = 'static/assets/remoteInPersonPlot.png'
+        if os.path.isfile(strFile):
+            os.remove(strFile)
+        strFile = 'static/assets/weekdayPlot.png'
+        if os.path.isfile(strFile):
+             os.remove(strFile)
         makePieChart(remoteTime, campusTime)
         makeGraphWeekday(weekdayTime)
         units = getUnits(classes)
