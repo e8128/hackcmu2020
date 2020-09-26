@@ -1,5 +1,12 @@
 from flask import Flask,redirect,url_for,render_template,request
 
+from datetime import date, time, datetime, timedelta
+
+import infoParse
+from optimization import optimize
+tester = ['15122','18220','18290','18202']
+tester = optimize(tester)
+
 app = Flask(__name__)
 
 @app.route("/",methods=["POST","GET"])
@@ -38,6 +45,7 @@ def user(usr):
     return usr
 
 
+<<<<<<< Updated upstream
 
 def checkInput(s): #checks if the classes in put is valid
     return '-' in s or s.isalpha()
@@ -70,6 +78,64 @@ def splitString(s): # takes string data we recieve from website
     classes=eval(classes)
     return [classes,opt, year] 
 
+=======
+'''
+    self.classId = classId
+    self.start = start
+    self.end = end
+    self.room = room
+'''
+test = ['Monday 09:20 to 10:10 @ CMU REMOTE', 'Monday 10:40 to 11:30 @ Mellon Institute MELLON', 'Tuesday 08:00 to 09:20 @ CMU REMOTE', 'Tuesday 13:30 to 14:50 @ CMU REMOTE', 'Thursday 08:00 to 09:20 @ CMU REMOTE', 'Thursday 13:30 to 14:50 @ CMU REMOTE', 'Friday 09:20 to 10:10 @ Doherty Hall 2210']
+
+# [[Monday 09:20 to 10:10 @ CMU REMOTE, Monday 10:40 to 11:30 @ Mellon Institute 
+# MELLON, Tuesday 08:00 to 09:20 @ CMU REMOTE, Tuesday 13:30 to 14:50 @ CMU REMOTE, 
+# Thursday 08:00 to 09:20 @ CMU REMOTE, Thursday 13:30 to 14:50 @ CMU REMOTE, 
+# Friday 09:20 to 10:10 @ Doherty Hall 2210], [Monday 09:20 to 10:10 @ CMU REMOTE, 
+# Monday 10:40 to 11:30 @ Tepper Quad 1102, Tuesday 08:00 to 09:20 @ CMU REMOTE, 
+# Tuesday 13:30 to 14:50 @ CMU REMOTE, Thursday 08:00 to 09:20 @ CMU REMOTE, 
+# Thursday 13:30 to 14:50 @ CMU REMOTE, Friday 09:20 to 10:10 @ Doherty Hall 2210], 
+# [Monday 10:40 to 11:30 @ CMU REMOTE, Monday 10:40 to 11:30 @ Mellon Institute MELLON,
+#  Tuesday 08:00 to 09:20 @ CMU REMOTE, Tuesday 13:30 to 14:50 @ CMU REMOTE, 
+#  Thursday 08:00 to 09:20 @ CMU REMOTE, Thursday 13:30 to 14:50 @ CMU REMOTE, 
+#  Friday 10:40 to 11:30 @ Baker Hall A51], [Monday 10:40 to 11:30 @ CMU REMOTE, 
+#  Monday 10:40 to 11:30 @ Tepper Quad 1102, Tuesday 08:00 to 09:20 @ CMU REMOTE, 
+#  Tuesday 13:30 to 14:50 @ CMU REMOTE, Thursday 08:00 to 09:20 @ CMU REMOTE, 
+#  Thursday 13:30 to 14:50 @ CMU REMOTE, Friday 10:40 to 11:30 @ Baker Hall A51]]
+
+def getWeekInfo(classPeriod): #takes 1-d obj and maps all times to weekday set
+    weekdaySet = {'Monday':[], 'Tuesday':[],' Wednesday':[], 
+                'Thursday':[], 'Friday':[], 'Saturday':[],
+                'Sunday':[]}
+    for elem in lst: 
+        if classPeriod.room != 'CMU REMOTE' and classPeriod.room != 'DNM' and classPeriod!='TBA':
+            timeStart = classPeriod.start
+            timeEnd = classPeriod.end 
+            weekDay = extractDOW(dateObj)
+            weekdaySet[weekDay].append(goodDateFormat(dateObj))
+            weekdaySet[weekDay].append(goodDateFormat(dateObj))
+    return weekdaySet
+        
+
+def getAvgTimeOnCampus(weekdaySet): #takes a weekdaySet dictionary, finds time spent eachday
+    final = []     #return average mins per day 
+    for elem in weekdaySet: #index into weekday (monday: [(10:30, 200)])
+        maxTime = max(weekdaySet[elem])
+        minTime = min(weekdaySet[elem])
+        timeDiff = timeSubtraction(maxTime, minTime)
+        final.append(timeDiff)
+    return sum(final)/length(final)
+
+#write a fucntiont hat takes a list of schedule return heuristic value 
+print(tester[0])
+
+def timeSubtraction(t1, t2): #takes two strings and finds the mins between
+    difference = None
+    if t1 > t2:
+        difference = t1 - t2 
+    else:
+        difference = t2 - t1 
+    return int(difference.total_seconds()) // 60  
+>>>>>>> Stashed changes
 
 
 
