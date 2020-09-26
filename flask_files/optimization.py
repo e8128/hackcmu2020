@@ -1,24 +1,23 @@
 from infoParse import ClassPeriod
 from infoParse import parseTime
 from infoParse import getCourseMeetings
+from infoParse import checkConflicts
+from infoParse import generatePossibleSections
 
 potentialSchedules = []
 
-# Omkar's generate meeting time function
+# calls Omkar's generate meeting time function
 def generateMeetingTimes(course, info):
     lecture, section = info
     return getCourseMeetings(course, lecture, section)
-    # if (section == ('1', 'A')):
-    #     start = parseTime("M", "5:30PM")
-    # else:
-    #     start = parseTime("T", "5:30PM")
-    # return [ClassPeriod("15122", start, start, "CMU REMOTE")]
 
-def generatePossibleSections(course):
-    return [('1', 'A'), ('1', 'B')]
+# tries all potential sections
+# def generatePossibleSections(course):
+#     return [('1', 'A'), ('1', 'B')]
 
 # Generates all potential course schedules
 def fullSearch(allPossibilities, current, meetingList):
+    # potentially do an early check for conflicts here to improve performance
     if (current >= len(allPossibilities)):
         potentialSchedules.append(meetingList)
         return
@@ -38,28 +37,52 @@ def generateAll(courses):
     allPossibilities = []
     for course in courses:
         possibleSections = generatePossibleSections(course)
-        allPossibilities.append([generateMeetingTimes(course, section) for section in possibleSections])
-    print("allPossibilities: ", allPossibilities)
+        sectionMeetings = []
+        for section in possibleSections:
+            (meetings, garbo1, garbo2, garbo3) = generateMeetingTimes(course, section)
+            sectionMeetings.append(meetings)
+        allPossibilities.append(sectionMeetings)
     fullSearch(allPossibilities, 0, [])
 
 # Note: generateAll must be called first
 def postProcess():
+    # print(potentialSchedules)
+    cleanedSchedules = []
     for schedule in potentialSchedules:
-        pass
-        
+        schedule.sort(key=lambda meeting: meeting.start)
+        # Must be a conflict-free schedule
+        if (len(checkConflicts(schedule)) == 0):
+            cleanedSchedules.append(schedule)
+    return cleanedSchedules
+
+# def getLatestStart(schedule):
+#     for meeting in schedule:
+
+# Can really only be called once
+def optimize(courses):
+    generateAll(courses)
+    potentialSchedules = postProcess()
+    print("Number of Valid Schedules Generated:", len(potentialSchedules))
+    # print(potentialSchedules)
+    return potentialSchedules
+    # for potentialSchedule in potentialSchedules:
+        # print(potentialSchedule)
+
 
 if __name__ == '__main__':
-    generateAll(["15122", "15213"])
+    # optimize(["15122", "15213"])
+    # optimize(["16384", "18290", "18213", "18200"])
+    # optimize(["15210", "15281", "84380", "21355", "11411"])
+    optimize(["18290", "18220", "18202", "15122", "18200"])
+    # optimize(["73401"])
+    # 18202
+    potentialSchedules = postProcess()
 
-    print(len(potentialSchedules))
-    for potentialSchedule in potentialSchedules:
-        print(potentialSchedule)
-
-    print(getCourseMeetings("15122", "1", "C"))
-    print(getCourseMeetings("15455", "1", "A"))
-    print(getCourseMeetings("15445", "1", "H"))
-    print(getCourseMeetings("15424", "1", "A"))
-    print(getCourseMeetings("15424", "1", "B"))
-    print(getCourseMeetings("15440", "1", "C"))
-    print(getCourseMeetings("15122", "2", "K"))
+    # print(getCourseMeetings("15122", "1", "C"))
+    # print(getCourseMeetings("15455", "1", "A"))
+    # print(getCourseMeetings("15445", "1", "H"))
+    # print(getCourseMeetings("15424", "1", "A"))
+    # print(getCourseMeetings("15424", "1", "B"))
+    # print(getCourseMeetings("15440", "1", "C"))
+    # print(getCourseMeetings("15122", "2", "K"))
 

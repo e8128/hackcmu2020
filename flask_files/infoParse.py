@@ -66,7 +66,7 @@ class ClassPeriod:
         self.room = room
 
     def __repr__(self):
-        return "{} {} to {} @ {}".format(extractDOW(self.start), goodDateFormat(self.start), goodDateFormat(self.end),
+        return "{} {} {} to {} @ {}".format(self.classId, extractDOW(self.start), goodDateFormat(self.start), goodDateFormat(self.end),
             longForm(self.room))
 
 # Takes a list of classes and returns all meetings
@@ -124,48 +124,82 @@ def remoteTime(meetings):
 
 # Takes registration info, returns array of ClassPeriod instances
 def getCourseMeetings(courseNumber, lectureNumber, recitationSection):
-    if (parsedClassInfo[courseNumber] is None):
+    if (courseNumber not in parsedClassInfo):
         print("Class information not found")
         return []
     classInfo = parsedClassInfo[courseNumber]
     res = []
-    if (classInfo['Lec/Sec'] == '\xa0' or "Lec" == classInfo['Lec/Sec'] or "Lec " + lectureNumber in classInfo['Lec/Sec'] or recitationSection == classInfo['Lec/Sec']):
+    lectureFound = False
+    recitationFound = False
+    pitts = True
+    if (classInfo['Lec/Sec'] == '\xa0' or ("Lec" == classInfo['Lec/Sec'] and lectureNumber == "1") or "Lec " + lectureNumber in classInfo['Lec/Sec'] or recitationSection == classInfo['Lec/Sec']):
+        lectureFound = True
+        if (recitationSection == classInfo['Lec/Sec']):
+            recitationFound = True
+        if (classInfo['Location'] != "Pittsburgh, Pennsylvania"):
+            pitts = False
         for day in classInfo['Days']:
-            res.append(ClassPeriod(courseNumber, parseTime(day, classInfo['Begin']), parseTime(day, classInfo['End']), classInfo['Bldg/Room']))
+            if (classInfo['Begin'] != '\xa0' and classInfo['End'] != '\xa0'):
+                res.append(ClassPeriod(courseNumber, parseTime(day, classInfo['Begin']), parseTime(day, classInfo['End']), classInfo['Bldg/Room']))
     others = classInfo['sections']
     for i in range(len(others)):
         o = others[i]
-        if ("Lec" == o['Lec/Sec'] or "Lec " + lectureNumber in o['Lec/Sec'] or recitationSection == o['Lec/Sec'] or (i == 0 and o['Lec/Sec'] == '\xa0')):
+        if (("Lec" == o['Lec/Sec'] and lectureNumber == "1") or "Lec " + lectureNumber in o['Lec/Sec'] or recitationSection == o['Lec/Sec'] or (i == 0 and o['Lec/Sec'] == '\xa0')):
+            if (recitationSection == o['Lec/Sec']):
+                recitationFound = True
+            if (("Lec" == o['Lec/Sec'] and lectureNumber == "1") or "Lec " + lectureNumber in o['Lec/Sec']):
+                lectureFound = True
+            if (o['Location'] != "Pittsburgh, Pennsylvania"):
+                pitts = False
             for day in o['Days']:
-                res.append(ClassPeriod(courseNumber, parseTime(day, o['Begin']), parseTime(day, o['End']), o['Bldg/Room']))
+                if (o['Begin'] != '\xa0' and o['End'] != '\xa0'):
+                    res.append(ClassPeriod(courseNumber, parseTime(day, o['Begin']), parseTime(day, o['End']), o['Bldg/Room']))
             if (i+1 < len(others) and others[i+1]['Lec/Sec'] == '\xa0'):
                 for day in others[i+1]['Days']:
-                    res.append(ClassPeriod(courseNumber, parseTime(day, others[i+1]['Begin']), parseTime(day, others[i+1]['End']), others[i+1]['Bldg/Room']))
-    return res
+                    if (o['Begin'] != '\xa0' and o['End'] != '\xa0'):
+                        res.append(ClassPeriod(courseNumber, parseTime(day, others[i+1]['Begin']), parseTime(day, others[i+1]['End']), others[i+1]['Bldg/Room']))
+    return (res, lectureFound, recitationFound, pitts)
 
 # Takes course number and returns array of tuples possible (lecture, recitation)
 def generatePossibleSections(courseNumber):
-    if (parsedClassInfo[courseNumber] is None):
+    if (courseNumber not in parsedClassInfo):
         print("Class information not found")
         return []
     classInfo = parsedClassInfo[courseNumber]
     profs = dict()
-    profs[classInfo['Instructor(s)']] = {"Lec": classInfo['Lec/Sec'], "Sec": []}
+    if ('Instructor(s)' in classInfo and classInfo['Instructor(s)'] != "\xa0"):
+        profs[classInfo['Instructor(s)']] = {"Lec": classInfo['Lec/Sec'], "Sec": []}
     others = classInfo['sections']
     for o in others:
         if ("Lec" in o['Lec/Sec']):
             profs[o['Instructor(s)']] = {"Lec": o['Lec/Sec'], "Sec": []}
         elif (o['Lec/Sec'] != '\xa0'):
-            if (profs[o['Instructor(s)']] is None):
+            if (o['Instructor(s)'] not in profs):
                 profs[o['Instructor(s)']] = {'Lec': o['Lec/Sec'], 'Sec': [o['Lec/Sec']]}
+            else:
+                profs[o['Instructor(s)']]['Sec'].append(o['Lec/Sec'])
     res = []
     for prof in profs:
         # Remove the Lec from lecture number
         lec = "1" if profs[prof]['Lec'] == "Lec" else (profs[prof]['Lec'] if "Lec" not in profs[prof]['Lec'] else profs[prof]['Lec'][4:])
         if (len(profs[prof]['Sec']) == 0):
-            res.append((lec, 'A'))
+            if not lec.isdigit():
+                res.append(("1", lec))
+            else:
+                res.append((lec, 'A'))
         else:
-            res.extend([(lec, sec) for sec in profs[prof]['Sec']])
+            options = [(lec, sec) for sec in profs[prof]['Sec']]
+            i = 0
+            while i < len(options):
+                (lec, sec) = options[i]
+                if not lec.isdigit():
+                    options.pop(i)
+                    options.append(("1", lec))
+                    if (lec != sec):
+                        options.append(("1", sec))
+                else:
+                    i += 1
+            res.extend(options)
     return res
 
 # def generatePossibleSectionsDumb(courseNumber):
@@ -190,6 +224,14 @@ def checkLocation(course, sectionLetter):
     return True
 
 if __name__ == '__main__':
+    print(generatePossibleSections("15112"))
+    print(generatePossibleSections("15122"))
+    print(generatePossibleSections("15424"))
+    print(generatePossibleSections("15455"))
+    print(getCourseMeetings("18213", "1", "F"))
+    print(getCourseMeetings("18213", "2", "Z"))
+    print(getCourseMeetings("18740", "1", "SV"))
+    print(getCourseMeetings("18100", "2", "F"))
     course1 = Course("15122", "Principles of Imperative Computing", "TR", "08:00AM", "09:20AM", "BH 5001", "Cervesato")
     course2 = Course("15150", "Principles of Functional Programming", "TR", "11:40AM", "01:00PM", "CMU REMOTE", "Brookes")
     print(course1.displayInfo())
