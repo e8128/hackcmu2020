@@ -1,6 +1,10 @@
 # Source: https://www.cmu.edu/hub/legend.html
 
 import datetime
+import parse
+
+global parsedClassInfo
+parsedClassInfo = parse.parseWebsite()
 
 abbreviations = {}
 
@@ -25,7 +29,7 @@ dowDict = {'M': '1900-01-01',
 
 # Returns datetime object
 def parseTime(dow, time):
-    obj = datetime.datetime.strptime("{} {}".format(dowDict[dow], time), "%Y-%m-%d %H:%M%p")
+    obj = datetime.datetime.strptime("{} {}".format(dowDict[dow], time), "%Y-%m-%d %I:%M%p")
     return obj
 
 # Represents a course
@@ -79,5 +83,29 @@ print(longForm("PH 101"))
 
 course1 = Course("15122", "Principles of Imperative Computing", "TR", "08:00AM", "09:20AM", "BH 5001", "Cervesato")
 course2 = Course("15150", "Principles of Functional Programming", "TR", "11:40AM", "01:00PM", "CMU REMOTE", "Brookes")
-print(course1.displayInfo())
-print(allMeetings([course1, course2]))
+# print(course1.displayInfo())
+# print(allMeetings([course1, course2]))
+
+# Takes registration info, returns array of ClassPeriod instances
+def getCourseMeetings(courseNumber, lectureNumber, recitationSection):
+    if (parsedClassInfo[courseNumber] is None):
+        print("Class information not found")
+        return []
+    classInfo = parsedClassInfo[courseNumber]
+    res = []
+    if (classInfo['Lec/Sec'] == '\xa0' or "Lec" == classInfo['Lec/Sec'] or "Lec " + lectureNumber in classInfo['Lec/Sec']):
+        for day in classInfo['Days']:
+            res.append(ClassPeriod(courseNumber, parseTime(day, classInfo['Begin']), parseTime(day, classInfo['End']), classInfo['Bldg/Room']))
+    others = classInfo['sections']
+    for i in range(len(others)):
+        o = others[i]
+        if ("Lec" == o['Lec/Sec'] or "Lec " + lectureNumber in o['Lec/Sec'] or recitationSection == o['Lec/Sec']):
+            for day in o['Days']:
+                res.append(ClassPeriod(courseNumber, parseTime(day, o['Begin']), parseTime(day, o['End']), o['Bldg/Room']))
+            if (i+1 < len(others) and others[i+1]['Lec/Sec'] == '\xa0'):
+                for day in others[i+1]['Days']:
+                    res.append(ClassPeriod(courseNumber, parseTime(day, others[i+1]['Begin']), parseTime(day, others[i+1]['End']), others[i+1]['Bldg/Room']))
+    return res
+
+c = getCourseMeetings("15424", "1", "B")
+print(c)
