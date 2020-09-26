@@ -45,6 +45,7 @@ def classes(class_string,option):
         remoteTime = info[2][0] #info[2] is tuple of (remote, oncampusTime)
         campusTime = info[2][1]
         makePieChart(remoteTime, campusTime)
+        makeGraphWeekday(weekdayTime)
         units = getUnits(classes)
         distance = info[3] 
         numSched = info[4]
