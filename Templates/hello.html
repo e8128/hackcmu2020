@@ -201,12 +201,20 @@
                     <u>{{numSched}}</u>
                 {%endif%}
                 <br>
+                
+                
+                {% if graphedW %}
                 <br>
                 <br>
-                Graph
-                {% if graphed %}
+                Graphs
                 <img src="/static/assets/weekdayPlot.png" alt="graph">
                 {%endif%}
+                {% if graphedP %}
+                <br>
+                <br>
+                <img src="/static/assets/remoteInPersonPlot.png" alt="graph">
+                {%endif%}
+
             </p>
                 
         </div>
