@@ -55,21 +55,29 @@ def postProcess():
             cleanedSchedules.append(schedule)
     return cleanedSchedules
 
+
+# def getLatestStart(schedule):
+#     for meeting in schedule:
+
+
+
 # Can really only be called once
 def optimize(courses):
     generateAll(courses)
     potentialSchedules = postProcess()
     print("Number of Valid Schedules Generated:", len(potentialSchedules))
     # print(potentialSchedules)
-    for potentialSchedule in potentialSchedules:
-        print(potentialSchedule)
-    
+    return potentialSchedules
+    # for potentialSchedule in potentialSchedules:
+        # print(potentialSchedule)
+
 
 if __name__ == '__main__':
     # optimize(["15122", "15213"])
     # optimize(["16384", "18290", "18213", "18200"])
     # optimize(["15210", "15281", "84380", "21355", "11411"])
-    optimize(["73401"])
+    optimize(["18290", "18220", "18202", "15122", "18200"])
+    # optimize(["73401"])
     # 18202
     potentialSchedules = postProcess()
 
