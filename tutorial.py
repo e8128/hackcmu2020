@@ -4,7 +4,7 @@ from optimization import getUnits
 
 app = Flask(__name__)
 
-@app.route("/",methods=["POST","GET"])
+@app.route("/",methods=["GET"])
 def home():
     print("routed home")
     if request.method=="POST":
@@ -16,21 +16,30 @@ def home():
     else:
         return render_template("hello.html",name=None,timeWalked=None,remote=None,timeAtSchool=None,units=None)
 
-@app.route("/<class_string>/<option>")
-def classes(class_string,option):
+@app.route("/",methods=["POST"])
+def classes():
+    data = request.form
+    d = data.to_dict()
+    print(d)
+    if ('options' not in d or 'classes' not in d):
+        return render_template("hello.html",name="",classes=[],timeWalked=None,remote=None,timeAtSchool=None,units=None)
+    option = d['options']
+    class_string = d['classes']
     print("Input:", class_string, option)
-    classes = class_string.split(", ")
-    schedule = getBestSchedule(classes, option)
-    info = getInfo(schedule)
-    print(info) #TODO: display schedule
-    weekdayTime = info[1] #list from length 7 each index is time in mins spent
-    remoteTime = info[2][0] #info[2] is tuple of (remote, oncampusTime)
-    campusTime = info[2][1]
-    units = getUnits(classes)
-    distance = info[3] 
-    return render_template("hello.html",name=option,classes=[repr(c) for c in schedule],timeWalked=distance,
-                            remote=remoteTime,timeAtSchool=campusTime
-                            ,units=units)
+    cl = class_string.split(", ")
+    schedule = getBestSchedule(cl, option)
+    if (schedule is not None):
+        info = getInfo(schedule)
+        print(info) #TODO: display schedule
+        weekdayTime = info[1] #list from length 7 each index is time in mins spent
+        remoteTime = info[2][0] #info[2] is tuple of (remote, oncampusTime)
+        campusTime = info[2][1]
+        units = getUnits(cl)
+        distance = info[3] 
+        return render_template("hello.html",name=option,classes=[repr(c) for c in schedule],timeWalked=distance,
+                                remote=remoteTime,timeAtSchool=campusTime
+                                ,units=units)
+    return render_template("hello.html",name="",classes=[],timeWalked=None,remote=None,timeAtSchool=None,units=None)
 
 @app.route("/login",methods=["POST","GET"])
 def login():

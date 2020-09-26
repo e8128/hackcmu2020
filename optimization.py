@@ -147,7 +147,7 @@ def getRoom(s): #gets room from string
 
 def getDistanceWalked(classPeriods): #takes a list of classes periods
                                      #walked each day 
-    weekdaySet = {'Monday':0, 'Tuesday':0,' Wednesday':0, 
+    weekdaySet = {'Monday':0, 'Tuesday':0,'Wednesday':0, 
                 'Thursday':0, 'Friday':0, 'Saturday':0,
                 'Sunday':0}
     if len(classPeriods)==1:

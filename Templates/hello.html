@@ -171,56 +171,34 @@
                         var dp = new DayPilot.Calendar("dp");
                         var classes = "{{ classes }}";
                         classes = classes.replace(/&#39;/g, "").slice(1,-1).split(", ");
-                
+                        dp.init();
                         // view
                         dp.startDate = "2020-08-31";
                         dp.viewType = "Week";
                         dp.durationBarVisible = false;
                         mapp = {"Monday": "2020-08-31", "Tuesday": "2020-09-01", "Wednesday": "2020-09-02", "Thursday": "2020-09-03", "Friday": "2020-09-04", "Saturday": "2020-09-05", "Sunday": "2020-09-06"}
-                    
-                        dp.events.list = [];
+                        console.log(dp.events)
+                        dp.events.list = [];
+                        dp.update();
                         for (var i = 0; i < classes.length; i++) {
                             cl = classes[i];
                             arr = cl.split(" ");
-                            dp.events.list.push({
+                            dp.events.add(new DayPilot.Event({
                                 "start": mapp[arr[1]] + "T" + arr[2] + ":00",
                                 "end": mapp[arr[1]] + "T" + arr[4] + ":00",
+                                "id": i,
                                 "text": arr[0] + ' - ' + arr.slice(6).join(" ")
-                            });
+                            }));
                         }
-                //         {
-                //             "start": "2016-06-07T10:00:00",
-                //             "end": "2016-06-07T13:00:00",
-                //             "id": "29b7a553-d44f-8f2c-11e1-a7d5f62eb123",
-                //             "text": "Event 3",
-                //             "backColor": "#B6D7A8",
-                //             "borderColor": "#6AA84F"
-                //         },
-                //         {
-                //             "start": "2016-06-07T14:00:00",
-                //             "end": "2016-06-07T17:00:00",
-                //             "id": "ff968cfb-eba1-8dc1-7396-7f0d4f465c8a",
-                //             "text": "Event 4",
-                //             "backColor": "#EA9999",
-                //             "borderColor": "#CC0000",
-                //             "tags": {
-                //                 "type": "important"
-                //             }
-                //         }
-                //     ];
-                
-                //     dp.onBeforeEventRender = function(args) {
-                //         if (args.data.tags && args.data.tags.type === "important"){
-                //             args.data.html = "<b>Important Event</b><br>" + args.data.text;
-                //             args.data.fontColor = "#fff";
-                //             args.data.backColor = "#E06666";
-                //         }
-                //     };
-                
-                        dp.init();
+                        dp.eventMoveHandling = "Disabled";
+                        dp.eventResizeHandling = "Disabled";
+                        dp.timeRangeSelectedHandling = "Disabled";
+                        console.log(dp.events);
+                        dp.update();
                     }
                     catch (err) {
                         console.log(err)
+                        document.getElementById("dp").innerHTML = "<p class='c-subtitle c-white'>This schedule combination is not possible</p>"
                     }
                     
                 
@@ -263,7 +241,7 @@
 
                 <br>
                 Total Possible Schedules: 
-                {% if numSched}
+                {% if numSched %}
                     <u>{{numSched}}</u>
                 {%endif%}
             </p>
