@@ -6,6 +6,7 @@
     <title>CMU Schedule Organizer</title>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='w3.css') }}">
    
@@ -179,9 +180,60 @@
                 <br>
                 Conflicts: <input type="text" id='conflicts'></input>
             </p>
-
         </div>
 
+        <div class='w3-container c-paraContainer c-paraRedBg'>
+            <p class='c-white c-smallerParaFont'>
+                {{ title }}
+            </p>
+            <canvas id="chart" width="800" height="800"></canvas>
+        </div>
+        
+        <script>
+        // bar chart data
+        var barData = {
+            labels : [
+                {% for item in labels %}
+                "{{ item }}",
+                {% endfor %}
+            ],
+
+            datasets : [{
+                fillColor: "rgba(245,237,237,0.2)",
+                strokeColor: "rgba(245,237,237,1)",
+                pointColor: "rgba(245,237,237,1)",
+                data : [
+                    {% for item in values %}
+                    "{{ item }}",
+                    {% endfor %}
+                ]
+            }]
+        }
+
+        // get bar chart canvas
+        var mychart = document.getElementById("chart").getContext("2d");
+
+        steps = 10
+        max = {{max}}
+
+        // draw bar chart
+        new Chart(mychart).Bar(barData, {
+        title: {
+            display: true,
+            text: "{{ title }}"
+        },
+        scaleOverride: true,
+        scaleSteps: steps,
+        scaleStepWidth: Math.ceil(max / steps),
+        scaleStartValue: 0,
+        scaleShowVerticalLines: false,
+        scaleShowGridLines : false,
+        barShowStroke : true,
+        scaleShowLabels: true
+        }
+        );
+
+        </script>
 
 
     </div>
