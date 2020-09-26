@@ -90,7 +90,7 @@ def makeGraphWeekday(classes): #takes list of classes times and returns bar grap
     days = ['M', 'T', 'W', 'T', 'F', 'Sat','Sun']
     mins = classes
     ind=np.arange(7)
-    ax.bar(ind, mins,color='black')
+    ax.bar(ind, mins,color=(['red', 'black'] * 3) + ['red'])
     xTickMarks = days
     ax.set_xticks(ind)
     xtickNames = ax.set_xticklabels(xTickMarks)
@@ -102,13 +102,14 @@ def makeGraphWeekday(classes): #takes list of classes times and returns bar grap
 
 def makePieChart(remote, inPerson):
     labels = 'Remote', 'In Person'
+    colors=['red', 'black']
     total = float(remote) + float(inPerson)
     remotePercentage = float(remote)/total
     inPersonPerc = float(inPerson)/total
     sizes = [remotePercentage, inPersonPerc]
     fig1, ax1 = plt.subplots()
     ax1.pie(sizes,  labels=labels, autopct='%1.1f%%',
-            shadow=True, startangle=90)
+            shadow=True, startangle=90, colors=colors)
     ax1.axis('equal') 
     plt.title("Remote/In-Person Ratio")
     plt.savefig('./static/assets/remoteInPersonPlot.png')
