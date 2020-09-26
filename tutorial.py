@@ -22,7 +22,7 @@ def classes(class_string,option):
     schedule = getBestSchedule(classes, option)
     info = getInfo(schedule)
     print(info) #TODO: display schedule
-    return render_template("hello.html",name=option,timeWalked=None,remote=None,timeAtSchool=None,units=None)
+    return render_template("hello.html",name=option,classes=[repr(c) for c in schedule],timeWalked=None,remote=None,timeAtSchool=None,units=None)
 
 @app.route("/login",methods=["POST","GET"])
 def login():
