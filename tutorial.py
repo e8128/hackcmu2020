@@ -5,7 +5,7 @@ from infoDisplay import getBestSchedule,getInfo
 from optimization import getUnits
 
 #Stackoverflow solution: https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
-import io
+
 from flask import Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -44,6 +44,7 @@ def classes(class_string,option):
     makeGraphWeekday(weekdayTime)
     remoteTime = info[2][0] #info[2] is tuple of (remote, oncampusTime)
     campusTime = info[2][1]
+    makePieChart(remoteTime, campusTime)
     units = getUnits(classes)
     distance = info[3] 
     numSched = info[4]
@@ -53,7 +54,8 @@ def classes(class_string,option):
 
     return render_template("hello.html",name=name,timeWalked=distance,
                             remote=remoteTime,timeAtSchool=campusTime
-                            ,units=units, numSched=numSched, graphed=True)
+                            ,units=units, numSched=numSched, graphedW=True, 
+                            graphedP=True)
 
 @app.route("/login",methods=["POST","GET"])
 def login():
@@ -91,9 +93,18 @@ def makeGraphWeekday(classes): #takes list of classes times and returns bar grap
     plt.title('Time Spent on Classes by Weekday')
     plt.savefig('./static/assets/weekdayPlot.png')
 
-makeGraphWeekday([1,2,3,5,6,6,2])
-
-
+def makePieChart(remote, inPerson):
+    labels = 'Remote', 'In Person'
+    total = float(remote) + float(inPerson)
+    remotePercentage = float(remote)/total
+    inPersonPerc = float(inPerson)/total
+    sizes = [remotePercentage, inPersonPerc]
+    fig1, ax1 = plt.subplots()
+    ax1.pie(sizes,  labels=labels, autopct='%1.1f%%',
+            shadow=True, startangle=90)
+    ax1.axis('equal') 
+    plt.title("Remote/In-Person Ratio")
+    plt.savefig('./static/assets/remoteInPersonPlot.png')
 
     
 
