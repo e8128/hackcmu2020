@@ -54,7 +54,7 @@
         (max-device-width: 900px) {
             body{
                 background-image:none;
-                background-color: #0E153A;
+                background-color: #000000
             }
             .c-monitor{
                 display:none;
@@ -62,15 +62,7 @@
             .c-mobile{
                 display:block;
             }
-            .c-lineHeight{
-                line-height: 0.5;
-            }
-            .c-blockContainer{
-                margin-top:10%;
-                margin-right: 5%;
-                margin-left:5%;
-                
-            }
+            
         }
 
     </style>
@@ -85,7 +77,7 @@
     <!-- Start Page -->
     <div data-aos="fade-up">
         <img src='/static/assets/cmu.jpg' alt='Something Went Wrong :('
-        class="w3-container c-container" id='cmuImage' style='padding-bottom: 20px;'>
+        class="w3-container c-container c-mobile" id='cmuImage' style='padding-bottom: 20px;'>
         <p class='c-fontTitles c-white' id='title'>
             Schedule Orgnaizer
         </p>
@@ -269,8 +261,12 @@
                 {% if graphedW %}
                 <br>
                 <br>
+<<<<<<< Updated upstream
                 {% if graphed %}
                 <img id='bar-graph' src="/static/assets/weekdayPlot.jpg" alt="graph">
+=======
+                <img src="/static/assets/weekdayPlot.png" alt="graph">
+>>>>>>> Stashed changes
                 {%endif%}
                 {% if graphedP %}
                 <br>
