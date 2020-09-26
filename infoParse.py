@@ -180,7 +180,7 @@ def generatePossibleSections(courseNumber):
         lec = "1" if profs[prof]['Lec'] == "Lec" else (profs[prof]['Lec'] if "Lec" not in profs[prof]['Lec'] else profs[prof]['Lec'][4:])
         if (len(profs[prof]['Sec']) == 0):
             if not lec.isdigit():
-                res.append(("1", "A"))
+                res.append(("1", lec))
             else:
                 res.append((lec, 'A'))
         else:
