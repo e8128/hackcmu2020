@@ -171,31 +171,38 @@
         <div class='w3-container c-paraContainer c-paraRedBg'>
             <p class='c-white c-smallerParaFont'>
                 Some Helpful Stats: 
+                <br>
                 {% if name %}
-                    Hello {{name}}!
+                    Option: <u>{{name}}!</u>
                 {%endif%}
                 <br>
                 Time spent Walking Each Week:  
                 {% if timeWalked  %}
-                     {{timeWalked}}
+                     <u>{{timeWalked}}</u>
                  {%endif%}
                 <br>
                 Remote/In-Person Classes: 
                 {% if remote  %}
-                     <h1>{{remote}}</h1>
+                     <u>{{remote}}</u>
                  {%endif%}
                 <br>
                 Avg Time at School (start of first class to end): <!-- graph later by day-->
                 {% if timeAtSchool  %}
-                <h1>{{remote}}</h1>
+                     <u>{{timeAtSchool}}</u>
                 {%endif%}
                 <br>
                 Units Taken: 
                 {% if units %}
-                <h1>{{remote}}</h1>
+                    <u>{{units}}</u>
                 {%endif%}
                 <br>
                 Conflicts: 
+
+                <br>
+                Total Possible Schedules: 
+                {% if numSched}
+                    <u>{{numSched}}</u>
+                {%endif%}
             </p>
 
         </div>

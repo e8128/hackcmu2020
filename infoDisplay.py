@@ -4,6 +4,7 @@ from infoParse import remoteTime
 from infoParse import countTime
 from optimization import generateAll
 from optimization import optimize
+from optimization import getDistanceWalked
 import optimization
 
 junk1 = 0
@@ -11,7 +12,8 @@ junk2 = 0
 
 # Example of info return function
 def getInfo(schedule):
-    return (schedule, countTime(schedule), remoteTime(schedule))
+    return (schedule, countTime(schedule), remoteTime(schedule),
+             getDistanceWalked(schedule) )
 
 # TODO: Return earliest/latest class times (see optimization.py heuristics)
 def infoPrint(schedule):
