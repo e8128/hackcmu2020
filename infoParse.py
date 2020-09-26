@@ -152,6 +152,17 @@ def generatePossibleSections(course):
     
     return res
 
+# Checks if a course section is located in Pittsburgh
+def checkLocation(course, sectionLetter):
+    infoDict = parsedClassInfo[course]
+    print(infoDict)
+    for section in infoDict['sections']:
+        if (section['Lec/Sec'] != sectionLetter):
+            continue
+        if (section['Location'] != 'Pittsburgh, Pennsylvania'):
+            return False
+    return True
+
 if __name__ == '__main__':
     course1 = Course("15122", "Principles of Imperative Computing", "TR", "08:00AM", "09:20AM", "BH 5001", "Cervesato")
     course2 = Course("15150", "Principles of Functional Programming", "TR", "11:40AM", "01:00PM", "CMU REMOTE", "Brookes")
@@ -170,3 +181,6 @@ if __name__ == '__main__':
     print("Minutes per day: ", countTime(meetings))
 
     print("Remote Time: ", remoteTime(meetings))
+
+    # print(checkLocation("15295", "A"))
+    # print(checkLocation("15295", "W"))

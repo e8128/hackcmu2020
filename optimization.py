@@ -54,4 +54,6 @@ if __name__ == '__main__':
     print(getCourseMeetings("15445", "1", "H"))
     print(getCourseMeetings("15424", "1", "A"))
     print(getCourseMeetings("15424", "1", "B"))
+    print(getCourseMeetings("15440", "1", "C"))
+    print(getCourseMeetings("15122", "2", "K"))
 
