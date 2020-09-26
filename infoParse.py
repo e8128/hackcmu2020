@@ -95,21 +95,6 @@ def checkConflicts(meetings):
 
     return conflicts
 
-
-def meetingMinutes(meeting):
-    tdelta = meeting.end - meeting.start
-    return int(tdelta.total_seconds()) // 60     
-
-# Returns how many minutes of class on each weekday
-def countTime(meetings):
-    time = 0
-    dowTimes = [0] * 7
-    for meeting in meetings:
-        minutes = meetingMinutes(meeting)
-        dowTimes[meeting.start.weekday()] += minutes
-        time += minutes
-    return dowTimes
-
 # Returns how much minutes per week are remote
 def remoteTime(meetings):
     remote = 0
@@ -121,6 +106,20 @@ def remoteTime(meetings):
         else:
             inPerson += minutes
     return (remote, inPerson)
+
+# Returns how many minutes of class on each weekday
+def countTime(meetings):
+    time = 0
+    dowTimes = [0] * 7
+    for meeting in meetings:
+        minutes = meetingMinutes(meeting)
+        dowTimes[meeting.start.weekday()] += minutes
+        time += minutes
+    return dowTimes
+
+def meetingMinutes(meeting):
+    tdelta = meeting.end - meeting.start
+    return int(tdelta.total_seconds()) // 60     
 
 # Takes registration info, returns array of ClassPeriod instances
 def getCourseMeetings(courseNumber, lectureNumber, recitationSection):
@@ -224,31 +223,31 @@ def checkLocation(course, sectionLetter):
     return True
 
 if __name__ == '__main__':
-    print(generatePossibleSections("15112"))
-    print(generatePossibleSections("15122"))
-    print(generatePossibleSections("15424"))
-    print(generatePossibleSections("15455"))
-    print(getCourseMeetings("18213", "1", "F"))
-    print(getCourseMeetings("18213", "2", "Z"))
-    print(getCourseMeetings("18740", "1", "SV"))
-    print(getCourseMeetings("18100", "2", "F"))
-    course1 = Course("15122", "Principles of Imperative Computing", "TR", "08:00AM", "09:20AM", "BH 5001", "Cervesato")
-    course2 = Course("15150", "Principles of Functional Programming", "TR", "11:40AM", "01:00PM", "CMU REMOTE", "Brookes")
-    print(course1.displayInfo())
-    print(allMeetings([course1, course2]))
-    course3 = Course("48100", "Archi Studio", "MWF", "01:30PM", "4:20PM", "CFA 200", "TBA")
-    courses = [course1, course2, course3]
-    meetings = allMeetings(courses)
-    print("MEETINGS")
-    for meeting in meetings:
-        print(meeting)
-    print("Meetings: ", meetings)
+    # print(generatePossibleSections("15112"))
+    # print(generatePossibleSections("15122"))
+    # print(generatePossibleSections("15424"))
+    # print(generatePossibleSections("15455"))
+    # print(getCourseMeetings("18213", "1", "F"))
+    # print(getCourseMeetings("18213", "2", "Z"))
+    # print(getCourseMeetings("18740", "1", "SV"))
+    # print(getCourseMeetings("18100", "2", "F"))
+    # course1 = Course("15122", "Principles of Imperative Computing", "TR", "08:00AM", "09:20AM", "BH 5001", "Cervesato")
+    # course2 = Course("15150", "Principles of Functional Programming", "TR", "11:40AM", "01:00PM", "CMU REMOTE", "Brookes")
+    # print(course1.displayInfo())
+    # print(allMeetings([course1, course2]))
+    # course3 = Course("48100", "Archi Studio", "MWF", "01:30PM", "4:20PM", "CFA 200", "TBA")
+    # courses = [course1, course2, course3]
+    # meetings = allMeetings(courses)
+    # print("MEETINGS")
+    # for meeting in meetings:
+    #     print(meeting)
+    # print("Meetings: ", meetings)
 
-    print("Conflicts: ", checkConflicts(meetings))
+    # print("Conflicts: ", checkConflicts(meetings))
 
-    print("Minutes per day: ", countTime(meetings))
+    # print("Minutes per day: ", countTime(meetings))
 
-    print("Remote Time: ", remoteTime(meetings))
+    # print("Remote Time: ", remoteTime(meetings))
 
     # print(checkLocation("15295", "A"))
     # print(checkLocation("15295", "W"))

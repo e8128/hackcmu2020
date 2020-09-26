@@ -3,6 +3,8 @@ from infoParse import parseTime
 from infoParse import getCourseMeetings
 from infoParse import checkConflicts
 from infoParse import generatePossibleSections
+from infoParse import remoteTime
+from infoParse import countTime
 
 potentialSchedules = []
 
@@ -39,14 +41,14 @@ def generateAll(courses):
         possibleSections = generatePossibleSections(course)
         sectionMeetings = []
         for section in possibleSections:
+            # Check the boolean flags properly
             (meetings, garbo1, garbo2, garbo3) = generateMeetingTimes(course, section)
-            sectionMeetings.append(meetings)
+            print(course, garbo1, garbo2, garbo3)
+            if (garbo3):
+                sectionMeetings.append(meetings)
         allPossibilities.append(sectionMeetings)
     fullSearch(allPossibilities, 0, [])
-
-# Note: generateAll must be called first
-def postProcess():
-    # print(potentialSchedules)
+    # Post-process to remove illegal schedules
     cleanedSchedules = []
     for schedule in potentialSchedules:
         schedule.sort(key=lambda meeting: meeting.start)
@@ -55,34 +57,30 @@ def postProcess():
             cleanedSchedules.append(schedule)
     return cleanedSchedules
 
-# def getLatestStart(schedule):
-#     for meeting in schedule:
+def remoteTimeHeuristic(schedule):
+    remTime, inPersonTime = remoteTime(schedule)
+    return remTime
 
-# Can really only be called once
-def optimize(courses):
-    generateAll(courses)
-    potentialSchedules = postProcess()
-    print("Number of Valid Schedules Generated:", len(potentialSchedules))
-    # print(potentialSchedules)
-    return potentialSchedules
-    # for potentialSchedule in potentialSchedules:
-        # print(potentialSchedule)
+def minimumFridayHeuristic(schedule):
+    cTime = countTime(schedule)
+    return cTime[4] # Friday
 
+# Takes a list of schedules and returns the best schedule based on heuristic
+def optimize(potentialSchedules, heuristicFunction=remoteTimeHeuristic):
+    # print("Number of Valid Schedules Generated:", len(potentialSchedules))
+    currentSchedule = None
+    currentVal = None
+    for schedule in potentialSchedules:
+        heuristic = heuristicFunction(schedule)
+        if (currentSchedule is None or heuristic < currentVal):
+            currentSchedule = schedule
+            currentVal = heuristic
+    return currentSchedule
 
 if __name__ == '__main__':
     # optimize(["15122", "15213"])
     # optimize(["16384", "18290", "18213", "18200"])
     # optimize(["15210", "15281", "84380", "21355", "11411"])
-    optimize(["18290", "18220", "18202", "15122", "18200"])
-    # optimize(["73401"])
-    # 18202
-    potentialSchedules = postProcess()
-
-    # print(getCourseMeetings("15122", "1", "C"))
-    # print(getCourseMeetings("15455", "1", "A"))
-    # print(getCourseMeetings("15445", "1", "H"))
-    # print(getCourseMeetings("15424", "1", "A"))
-    # print(getCourseMeetings("15424", "1", "B"))
-    # print(getCourseMeetings("15440", "1", "C"))
-    # print(getCourseMeetings("15122", "2", "K"))
+    # optimize(["18290", "18220", "18202", "15122", "18200"])
+    print("Main")
 

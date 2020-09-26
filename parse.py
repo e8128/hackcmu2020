@@ -45,7 +45,11 @@ def parseWebsite():
         d['sections'] = []
         for j in range(min(len(courseLabels), len(course))):
             label = courseLabels[j]
-            d[label] = course[j].string
+            # Really bad solution for 11411
+            if (label == 'Location' and len(course[j].string) <= 5):
+                d[label] = 'Pittsburgh, Pennsylvania'
+            else:
+                d[label] = course[j].string
         while (i + 1 < len(courses) and courses[i+1].find_all('td')[0].string == '\xa0'):
             dsub = dict()
             recitation = courses[i+1].find_all('td')
