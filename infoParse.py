@@ -166,6 +166,16 @@ def generatePossibleSections(courseNumber):
             res.extend([(lec, sec) for sec in profs[prof]['Sec']])
     return res
 
+# def generatePossibleSectionsDumb(courseNumber):
+#     lecture = "123"
+#     alpha = "ABCDEFG"
+#     ret = []
+#     for lectureNumber in lecture:
+#         for letter in alpha:
+#             if (getCourseMeetings("15112", lectureNumber, letter) is not None):
+#                 ret.append((lectureNumber, letter))
+#     return ret
+
 # Checks if a course section is located in Pittsburgh
 def checkLocation(course, sectionLetter):
     infoDict = parsedClassInfo[course]
@@ -198,3 +208,10 @@ if __name__ == '__main__':
 
     # print(checkLocation("15295", "A"))
     # print(checkLocation("15295", "W"))
+    while True:
+        course = input()
+        print(generatePossibleSections(course))
+        # print(generatePossibleSectionsDumb(course))
+        # print(getCourseMeetings(co
+    # print(generatePossibleSections("15122"))
+    # print(generatePossibleSections("15424"))

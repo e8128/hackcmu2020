@@ -32,9 +32,9 @@ def fullSearch(allPossibilities, current, meetingList):
         fullSearch(allPossibilities, current + 1, newMeetingList)
     return True
 
-# Takes a list of courses to optimize
-# Returns the optimal one
-def optimize(courses):
+# Takes a list of courses
+# Generate all possible course schedules
+def generateAll(courses):
     allPossibilities = []
     for course in courses:
         possibleSections = generatePossibleSections(course)
@@ -42,8 +42,13 @@ def optimize(courses):
     print("allPossibilities: ", allPossibilities)
     fullSearch(allPossibilities, 0, [])
 
+# Note: generateAll must be called first
+def postProcess():
+    for schedule in potentialSchedules:
+        
+
 if __name__ == '__main__':
-    optimize(["15122", "15213"])
+    generateAll(["15122", "15213"])
 
     print(len(potentialSchedules))
     for potentialSchedule in potentialSchedules:
