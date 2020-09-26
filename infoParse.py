@@ -6,8 +6,8 @@ import parse
 global parsedClassInfo
 parsedClassInfo = parse.parseWebsite()
 
+# Generate abbreviations
 abbreviations = {}
-
 file = open("abbreviations.txt", "r").read()
 lines = str.splitlines(file)
 for i in range(0, len(lines), 2):
@@ -29,33 +29,39 @@ dowDict = {'M': '1900-01-01',
            'S': '1900-01-06',
            'U': '1900-01-07'}
 
+# Represents a course
+# class Course:
+#     def __init__(self, courseId, title, days, start, end, room, instructor):
+#         self.courseId = courseId
+#         self.title = title
+#         self.meetingTimes = []
+#         for day in days:
+#             meeting = ClassPeriod(courseId, parseTime(day, start), parseTime(day, end), room)
+#             self.meetingTimes.append(meeting)
+#         self.room = room
+#         self.instructor = instructor
+    
+#     def displayInfo(self):
+#         ret = "{} {}\n".format(self.courseId, self.title)
+#         ret += "Meetings: {}".format(self.meetingTimes)
+#         return ret
+
+# datetime manipulation functions
+
 # Returns datetime object
 def parseTime(dow, time):
     obj = datetime.datetime.strptime("{} {}".format(dowDict[dow], time), "%Y-%m-%d %I:%M%p")
     return obj
 
-# Represents a course
-class Course:
-    def __init__(self, courseId, title, days, start, end, room, instructor):
-        self.courseId = courseId
-        self.title = title
-        self.meetingTimes = []
-        for day in days:
-            meeting = ClassPeriod(courseId, parseTime(day, start), parseTime(day, end), room)
-            self.meetingTimes.append(meeting)
-        self.room = room
-        self.instructor = instructor
-    
-    def displayInfo(self):
-        ret = "{} {}\n".format(self.courseId, self.title)
-        ret += "Meetings: {}".format(self.meetingTimes)
-        return ret
-        
 def extractDOW(dateObj):
     return dateObj.strftime("%A")
 
 def goodDateFormat(dateObj):
     return dateObj.strftime("%H:%M")
+
+def meetingMinutes(meeting):
+    tdelta = meeting.end - meeting.start
+    return int(tdelta.total_seconds()) // 60    
 
 # Represents a Class Period
 class ClassPeriod:
@@ -71,13 +77,13 @@ class ClassPeriod:
 
 # Takes a list of classes and returns all meetings
 # Also sorts by time
-def allMeetings(courses):
-    meetings = []
-    for course in courses:
-        for meeting in course.meetingTimes:
-            meetings.append(meeting)
-    meetings.sort(key=lambda meeting: meeting.start)
-    return meetings
+# def allMeetings(courses):
+#     meetings = []
+#     for course in courses:
+#         for meeting in course.meetingTimes:
+#             meetings.append(meeting)
+#     meetings.sort(key=lambda meeting: meeting.start)
+#     return meetings
 
 def checkOverlap(course1, course2):
     return (course1.end >= course2.start)
@@ -95,21 +101,6 @@ def checkConflicts(meetings):
 
     return conflicts
 
-
-def meetingMinutes(meeting):
-    tdelta = meeting.end - meeting.start
-    return int(tdelta.total_seconds()) // 60     
-
-# Returns how many minutes of class on each weekday
-def countTime(meetings):
-    time = 0
-    dowTimes = [0] * 7
-    for meeting in meetings:
-        minutes = meetingMinutes(meeting)
-        dowTimes[meeting.start.weekday()] += minutes
-        time += minutes
-    return dowTimes
-
 # Returns how much minutes per week are remote
 def remoteTime(meetings):
     remote = 0
@@ -121,6 +112,16 @@ def remoteTime(meetings):
         else:
             inPerson += minutes
     return (remote, inPerson)
+
+# Returns how many minutes of class on each weekday
+def countTime(meetings):
+    time = 0
+    dowTimes = [0] * 7
+    for meeting in meetings:
+        minutes = meetingMinutes(meeting)
+        dowTimes[meeting.start.weekday()] += minutes
+        time += minutes
+    return dowTimes
 
 # Takes registration info, returns array of ClassPeriod instances
 def getCourseMeetings(courseNumber, lectureNumber, recitationSection):
@@ -224,31 +225,31 @@ def checkLocation(course, sectionLetter):
     return True
 
 if __name__ == '__main__':
-    print(generatePossibleSections("15112"))
-    print(generatePossibleSections("15122"))
-    print(generatePossibleSections("15424"))
-    print(generatePossibleSections("15455"))
-    print(getCourseMeetings("18213", "1", "F"))
-    print(getCourseMeetings("18213", "2", "Z"))
-    print(getCourseMeetings("18740", "1", "SV"))
-    print(getCourseMeetings("18100", "2", "F"))
-    course1 = Course("15122", "Principles of Imperative Computing", "TR", "08:00AM", "09:20AM", "BH 5001", "Cervesato")
-    course2 = Course("15150", "Principles of Functional Programming", "TR", "11:40AM", "01:00PM", "CMU REMOTE", "Brookes")
-    print(course1.displayInfo())
-    print(allMeetings([course1, course2]))
-    course3 = Course("48100", "Archi Studio", "MWF", "01:30PM", "4:20PM", "CFA 200", "TBA")
-    courses = [course1, course2, course3]
-    meetings = allMeetings(courses)
-    print("MEETINGS")
-    for meeting in meetings:
-        print(meeting)
-    print("Meetings: ", meetings)
+    # print(generatePossibleSections("15112"))
+    # print(generatePossibleSections("15122"))
+    # print(generatePossibleSections("15424"))
+    # print(generatePossibleSections("15455"))
+    # print(getCourseMeetings("18213", "1", "F"))
+    # print(getCourseMeetings("18213", "2", "Z"))
+    # print(getCourseMeetings("18740", "1", "SV"))
+    # print(getCourseMeetings("18100", "2", "F"))
+    # course1 = Course("15122", "Principles of Imperative Computing", "TR", "08:00AM", "09:20AM", "BH 5001", "Cervesato")
+    # course2 = Course("15150", "Principles of Functional Programming", "TR", "11:40AM", "01:00PM", "CMU REMOTE", "Brookes")
+    # print(course1.displayInfo())
+    # print(allMeetings([course1, course2]))
+    # course3 = Course("48100", "Archi Studio", "MWF", "01:30PM", "4:20PM", "CFA 200", "TBA")
+    # courses = [course1, course2, course3]
+    # meetings = allMeetings(courses)
+    # print("MEETINGS")
+    # for meeting in meetings:
+    #     print(meeting)
+    # print("Meetings: ", meetings)
 
-    print("Conflicts: ", checkConflicts(meetings))
+    # print("Conflicts: ", checkConflicts(meetings))
 
-    print("Minutes per day: ", countTime(meetings))
+    # print("Minutes per day: ", countTime(meetings))
 
-    print("Remote Time: ", remoteTime(meetings))
+    # print("Remote Time: ", remoteTime(meetings))
 
     # print(checkLocation("15295", "A"))
     # print(checkLocation("15295", "W"))
