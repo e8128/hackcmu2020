@@ -55,11 +55,8 @@ def postProcess():
             cleanedSchedules.append(schedule)
     return cleanedSchedules
 
-
 # def getLatestStart(schedule):
 #     for meeting in schedule:
-
-
 
 # Can really only be called once
 def optimize(courses):
