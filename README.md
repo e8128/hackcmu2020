@@ -15,3 +15,5 @@ Project was built for HackCMU 2020 submission.
 
 Contributers:
 Eric Tong (SCS), Omkar Savkur (ECE), George Gao (ECE), Trevor Leong (SCS)
+
+Awards: Sponsor's Choice - Sandia National Laboratory 
